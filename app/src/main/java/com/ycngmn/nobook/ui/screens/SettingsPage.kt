@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.filled.ExpandMore
 
 @Composable
 fun SettingsGroup(
@@ -49,7 +50,7 @@ fun SettingsGroup(
                 modifier = Modifier.weight(1f)
             )
             Icon(
-                imageVector = Icons.Default.ExpandMore,
+                imageVector = Icons.Filled.ExpandMore,
                 contentDescription = if (expanded) "Collapse" else "Expand",
                 modifier = Modifier
                     .size(28.dp)
