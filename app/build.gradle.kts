@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.ycngmn.nobook"
+        applicationId = "com.rayhan.metapipe"
         minSdk = 22
         targetSdk = 35
         versionCode = 10
