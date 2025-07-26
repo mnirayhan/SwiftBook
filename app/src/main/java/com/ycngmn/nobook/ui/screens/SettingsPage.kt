@@ -22,6 +22,11 @@ import com.ycngmn.nobook.R
 import com.ycngmn.nobook.ui.NobookViewModel
 import com.ycngmn.nobook.ui.components.sheet.SheetItem
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
 
 @Composable
 fun SettingsGroup(
@@ -246,6 +251,7 @@ fun SettingsPage(
                         modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
                     )
                     val context = LocalContext.current
+                    val scope = rememberCoroutineScope()
                     val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
                     val appName = context.getString(R.string.app_name)
                     val versionName = packageInfo.versionName ?: "-"
@@ -254,6 +260,40 @@ fun SettingsPage(
                         Text(text = "${stringResource(R.string.app_name_label)}: $appName", style = MaterialTheme.typography.bodyMedium)
                         Text(text = "${stringResource(R.string.app_version_label)}: $versionName", style = MaterialTheme.typography.bodyMedium)
                         Text(text = "${stringResource(R.string.app_package_label)}: $packageName", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    // Update Check
+                    SheetItem(
+                        icon = R.drawable.download_24px,
+                        title = stringResource(R.string.check_update_title),
+                        isActive = false
+                    ) {
+                        scope.launch(Dispatchers.IO) {
+                            // Show checking toast
+                            launch(Dispatchers.Main) {
+                                android.widget.Toast.makeText(context, context.getString(R.string.update_checking), android.widget.Toast.LENGTH_SHORT).show()
+                            }
+                            try {
+                                val url = URL("https://api.github.com/repos/mnirayhan/metapipe/releases/latest")
+                                val json = url.readText()
+                                val latestTag = JSONObject(json).getString("tag_name")
+                                val currentVersion = versionName
+                                if (latestTag.removePrefix("v") > currentVersion) {
+                                    // Newer version available
+                                    val htmlUrl = JSONObject(json).getString("html_url")
+                                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(htmlUrl))
+                                    context.startActivity(intent)
+                                } else {
+                                    // Up to date
+                                    launch(Dispatchers.Main) {
+                                        android.widget.Toast.makeText(context, context.getString(R.string.update_up_to_date), android.widget.Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                launch(Dispatchers.Main) {
+                                    android.widget.Toast.makeText(context, "Update check failed", android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                     // Follow us on Github
                     SheetItem(

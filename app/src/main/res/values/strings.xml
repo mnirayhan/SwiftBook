@@ -37,4 +37,9 @@
     <string name="mute_keywords_hint">Enter keywords or hashtags, separated by commas</string>
     <string name="mute_keywords_save">Save</string>
     <string name="mute_keywords_value_example">e.g. politics, #spoiler, football</string>
+
+    <string name="check_update_title">Check for Updates</string>
+    <string name="update_up_to_date">App is up-to-date</string>
+    <string name="update_checking">Checking for updates...</string>
+    <string name="update_available">Update available!</string>
 </resources>
