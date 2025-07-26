@@ -28,7 +28,7 @@ fun FacebookWebView(
     val isDesktop = viewModel.desktopLayout.collectAsState()
     val isAutoDesktop = isAutoDesktop()
     val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
-    val muteKeywords = viewModel.muteKeywords.collectAsState()
+		val muteKeywords = viewModel.muteKeywords.collectAsState()
 
     LaunchedEffect(Unit) {
         if (isAutoDesktop && !isDesktop.value) {

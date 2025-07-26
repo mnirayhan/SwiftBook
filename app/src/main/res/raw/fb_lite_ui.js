@@ -74,6 +74,9 @@
             span[dir="auto"] {
                 font-weight: 700 !important;
                 color: #050505 !important;
+                font-size: 16px !important;            span[dir="auto"] {
+                font-weight: 700 !important;
+                color: #050505 !important;
                 font-size: 16px !important;
             }
 
@@ -90,7 +93,6 @@
                 color: #050505 !important;
                 line-height: 1.6 !important;
             }
-
             /* Like/Comment/Share buttons */
             div[role="button"][aria-label*="Like"],
             div[role="button"][aria-label*="Comment"],
@@ -370,3 +372,4 @@ if (!document.getElementById('fb-lite-loading-bar')) {
                 hideMutedPosts();
                 new MutationObserver(hideMutedPosts).observe(document.body, { childList: true, subtree: true });
             })();
+
