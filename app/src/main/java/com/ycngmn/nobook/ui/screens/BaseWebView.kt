@@ -91,7 +91,12 @@ fun BaseWebView(
     val isLoading = remember { mutableStateOf(true) }
     val isError = state.errorsForCurrentRequest.lastOrNull()?.isFromMainFrame == true
 
-    val settingsToggle = remember { mutableStateOf(false) }
+    var showSettingsPage by remember { mutableStateOf(false) }
+    if (showSettingsPage) {
+        SettingsPage(viewModel = viewModel, onClose = { showSettingsPage = false })
+        return
+    }
+
     val themeColor = viewModel.themeColor
     val isImmersiveMode = viewModel.immersiveMode.collectAsState()
 
@@ -130,10 +135,6 @@ fun BaseWebView(
         NetworkErrorDialog(context)
         return
     }
-
-    if (settingsToggle.value) NobookSheet(viewModel, settingsToggle, onRestart)
-    // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
-    if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
 
     if (isLoading.value) SplashLoading(state.loadingState)
 
@@ -178,7 +179,7 @@ fun BaseWebView(
                 }
 
                 webView.apply {
-                    addJavascriptInterface(NobookSettings(settingsToggle), "SettingsBridge")
+                    addJavascriptInterface(NobookSettings(showSettingsPage), "SettingsBridge")
                     addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
                     addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
                     addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")

@@ -348,3 +348,25 @@ if (!document.getElementById('fb-lite-loading-bar')) {
         setTimeout(() => { bar.style.width = '0%'; }, 800);
     });
 }
+
+            /* --- Keyword/Hashtag Mute Feature --- */
+            (function() {
+                if (!window.nobookMuteKeywords) return;
+                const raw = window.nobookMuteKeywords;
+                if (!raw.trim()) return;
+                const keywords = raw.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+                if (!keywords.length) return;
+                const keywordRegex = new RegExp(keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
+                function hideMutedPosts() {
+                    document.querySelectorAll('div[data-type="vscroller"] > div, div[role="article"]').forEach(post => {
+                        if (post.dataset.nobookMuted) return;
+                        const text = post.textContent?.toLowerCase() || '';
+                        if (keywordRegex.test(text)) {
+                            post.style.display = 'none';
+                            post.dataset.nobookMuted = '1';
+                        }
+                    });
+                }
+                hideMutedPosts();
+                new MutationObserver(hideMutedPosts).observe(document.body, { childList: true, subtree: true });
+            })();

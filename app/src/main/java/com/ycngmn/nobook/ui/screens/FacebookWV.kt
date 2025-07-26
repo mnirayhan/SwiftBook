@@ -49,7 +49,9 @@ fun FacebookWebView(
         onPostLoad = {
             val cdnBase = "https://raw.githubusercontent.com/ycngmn/Nobook/refs/heads/main/app/src/main/res/raw"
 
+            val muteKeywordsScript = "window.nobookMuteKeywords = '" + viewModel.muteKeywords.collectAsState().value.replace("'", "\\'") + "';"
             val scripts = listOf(
+                Script(true, null, null, muteKeywordsScript),
                 Script(true, R.raw.scripts, "$cdnBase/scripts.js"), // always apply
                 Script(viewModel.removeAds.value, R.raw.adblock, "$cdnBase/adblock.js"),
                 Script(viewModel.enableDownloadContent.value, R.raw.download_content, "$cdnBase/download_content.js"),
