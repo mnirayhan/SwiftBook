@@ -51,6 +51,7 @@ fun SheetContent(
     val stickyNavbar = viewModel.stickyNavbar.collectAsState()
     val pinchToZoom = viewModel.pinchToZoom.collectAsState()
     val amoledBlack = viewModel.amoledBlack.collectAsState()
+    val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
 
 
     Box(
@@ -122,9 +123,9 @@ fun SheetContent(
             SheetItem(
                 icon = R.drawable.computer_24px, // You may want a new icon for Lite Mode
                 title = stringResource(R.string.facebook_lite_mode_title),
-                isActive = viewModel.facebookLiteMode.collectAsState().value
+                isActive = facebookLiteMode.value
             ) {
-                viewModel.setFacebookLiteMode(!viewModel.facebookLiteMode.collectAsState().value)
+                viewModel.setFacebookLiteMode(!facebookLiteMode.value)
             }
 
             SheetItem(
