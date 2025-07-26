@@ -58,6 +58,9 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
     private val _hideGroups = MutableStateFlow(false)
     val hideGroups = _hideGroups.asStateFlow()
 
+    private val _facebookLiteMode = MutableStateFlow(false)
+    val facebookLiteMode = _facebookLiteMode.asStateFlow()
+
 
     private val _isRevertDesktop = mutableStateOf(false)
     val isRevertDesktop = _isRevertDesktop
@@ -77,6 +80,7 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
             _hideStories.value = dataStore.hideStories.first()
             _hidePeopleYouMayKnow.value = dataStore.hidePeopleYouMayKnow.first()
             _hideGroups.value = dataStore.hideGroups.first()
+            _facebookLiteMode.value = dataStore.facebookLiteMode.first()
 
             _isRevertDesktop.value = dataStore.revertDesktop.first()
         }
@@ -164,6 +168,13 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
             dataStore.setHideGroups(hideGroups)
         }
         _hideGroups.value = hideGroups
+    }
+
+    fun setFacebookLiteMode(facebookLiteMode: Boolean) {
+        viewModelScope.launch {
+            dataStore.setFacebookLiteMode(facebookLiteMode)
+        }
+        _facebookLiteMode.value = facebookLiteMode
     }
 
 
