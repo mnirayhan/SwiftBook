@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun SettingsGroup(
@@ -74,6 +73,28 @@ fun SettingsPage(
     viewModel: NobookViewModel,
     onClose: () -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val hideSuggested = viewModel.hideSuggested.collectAsState()
+    val hideReels = viewModel.hideReels.collectAsState()
+    val hideStories = viewModel.hideStories.collectAsState()
+    val hidePeopleYouMayKnow = viewModel.hidePeopleYouMayKnow.collectAsState()
+    val hideGroups = viewModel.hideGroups.collectAsState()
+    val removeAds = viewModel.removeAds.collectAsState()
+    val enableDownloadContent = viewModel.enableDownloadContent.collectAsState()
+    val desktopLayout = viewModel.desktopLayout.collectAsState()
+    val immersiveMode = viewModel.immersiveMode.collectAsState()
+    val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
+    val stickyNavbar = viewModel.stickyNavbar.collectAsState()
+    val pinchToZoom = viewModel.pinchToZoom.collectAsState()
+    val amoledBlack = viewModel.amoledBlack.collectAsState()
+    val muteKeywords = viewModel.muteKeywords.collectAsState()
+    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    val appName = context.getString(R.string.app_name)
+    val versionName = packageInfo.versionName ?: "-"
+    val packageName = context.packageName
+    var keywordInput by remember { mutableStateOf(muteKeywords.value) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -119,28 +140,28 @@ fun SettingsPage(
                     SheetItem(
                         icon = R.drawable.public_off_24px,
                         title = stringResource(R.string.hide_suggested_title),
-                        isActive = viewModel.hideSuggested.collectAsState().value
-                    ) { viewModel.setHideSuggested(!viewModel.hideSuggested.collectAsState().value) }
+                        isActive = hideSuggested.value
+                    ) { viewModel.setHideSuggested(!hideSuggested.value) }
                     SheetItem(
                         icon = R.drawable.movie_off_24px,
                         title = stringResource(R.string.hide_reels_title),
-                        isActive = viewModel.hideReels.collectAsState().value
-                    ) { viewModel.setHideReels(!viewModel.hideReels.collectAsState().value) }
+                        isActive = hideReels.value
+                    ) { viewModel.setHideReels(!hideReels.value) }
                     SheetItem(
                         icon = R.drawable.landscape_2_off_24px,
                         title = stringResource(R.string.hide_stories_title),
-                        isActive = viewModel.hideStories.collectAsState().value
-                    ) { viewModel.setHideStories(!viewModel.hideStories.collectAsState().value) }
+                        isActive = hideStories.value
+                    ) { viewModel.setHideStories(!hideStories.value) }
                     SheetItem(
                         icon = R.drawable.frame_person_off_24px,
                         title = stringResource(R.string.hide_people_you_may_know_title),
-                        isActive = viewModel.hidePeopleYouMayKnow.collectAsState().value
-                    ) { viewModel.setHidePeopleYouMayKnow(!viewModel.hidePeopleYouMayKnow.collectAsState().value) }
+                        isActive = hidePeopleYouMayKnow.value
+                    ) { viewModel.setHidePeopleYouMayKnow(!hidePeopleYouMayKnow.value) }
                     SheetItem(
                         icon = R.drawable.group_off_24px,
                         title = stringResource(R.string.hide_groups_title),
-                        isActive = viewModel.hideGroups.collectAsState().value
-                    ) { viewModel.setHideGroups(!viewModel.hideGroups.collectAsState().value) }
+                        isActive = hideGroups.value
+                    ) { viewModel.setHideGroups(!hideGroups.value) }
 
                     // Keyword/Hashtag Mute Section
                     Text(
@@ -153,7 +174,6 @@ fun SettingsPage(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp, bottom = 2.dp)
                     )
-                    var keywordInput by remember { mutableStateOf(viewModel.muteKeywords.collectAsState().value) }
                     Row(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -170,9 +190,9 @@ fun SettingsPage(
                             Text(stringResource(R.string.mute_keywords_save))
                         }
                     }
-                    if (viewModel.muteKeywords.collectAsState().value.isNotBlank()) {
+                    if (muteKeywords.value.isNotBlank()) {
                         Text(
-                            text = "Muted: ${viewModel.muteKeywords.collectAsState().value}",
+                            text = "Muted: ${muteKeywords.value}",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                         )
@@ -192,46 +212,46 @@ fun SettingsPage(
                     SheetItem(
                         icon = R.drawable.adblock_24px,
                         title = stringResource(R.string.remove_ads_title),
-                        isActive = viewModel.removeAds.collectAsState().value
-                    ) { viewModel.setRemoveAds(!viewModel.removeAds.collectAsState().value) }
+                        isActive = removeAds.value
+                    ) { viewModel.setRemoveAds(!removeAds.value) }
                     SheetItem(
                         icon = R.drawable.download_24px,
                         title = stringResource(R.string.download_content_title),
-                        isActive = viewModel.enableDownloadContent.collectAsState().value
-                    ) { viewModel.setEnableDownloadContent(!viewModel.enableDownloadContent.collectAsState().value) }
+                        isActive = enableDownloadContent.value
+                    ) { viewModel.setEnableDownloadContent(!enableDownloadContent.value) }
                     SheetItem(
                         icon = R.drawable.computer_24px,
                         title = stringResource(R.string.desktop_layout_title),
-                        isActive = viewModel.desktopLayout.collectAsState().value
+                        isActive = desktopLayout.value
                     ) {
                         val isAutoDesktop = com.ycngmn.nobook.utils.isAutoDesktop()
-                        if (!isAutoDesktop) viewModel.setDesktopLayout(!viewModel.desktopLayout.collectAsState().value)
+                        if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value)
                     }
                     SheetItem(
                         icon = R.drawable.immersive_mode_24px,
                         title = stringResource(R.string.immersive_mode_title),
-                        isActive = viewModel.immersiveMode.collectAsState().value
-                    ) { viewModel.setImmersiveMode(!viewModel.immersiveMode.collectAsState().value) }
+                        isActive = immersiveMode.value
+                    ) { viewModel.setImmersiveMode(!immersiveMode.value) }
                     SheetItem(
                         icon = R.drawable.computer_24px,
                         title = stringResource(R.string.facebook_lite_mode_title),
-                        isActive = viewModel.facebookLiteMode.collectAsState().value
-                    ) { viewModel.setFacebookLiteMode(!viewModel.facebookLiteMode.collectAsState().value) }
+                        isActive = facebookLiteMode.value
+                    ) { viewModel.setFacebookLiteMode(!facebookLiteMode.value) }
                     SheetItem(
                         icon = R.drawable.sticky_navbar_24px,
                         title = stringResource(R.string.sticky_navbar_title),
-                        isActive = viewModel.stickyNavbar.collectAsState().value
-                    ) { viewModel.setStickyNavbar(!viewModel.stickyNavbar.collectAsState().value) }
+                        isActive = stickyNavbar.value
+                    ) { viewModel.setStickyNavbar(!stickyNavbar.value) }
                     SheetItem(
                         icon = R.drawable.pinch_zoom_out_24px,
                         title = stringResource(R.string.pinch_to_zoom_title),
-                        isActive = viewModel.pinchToZoom.collectAsState().value
-                    ) { viewModel.setPinchToZoom(!viewModel.pinchToZoom.collectAsState().value) }
+                        isActive = pinchToZoom.value
+                    ) { viewModel.setPinchToZoom(!pinchToZoom.value) }
                     SheetItem(
                         icon = R.drawable.amoled_black_24px,
                         title = stringResource(R.string.amoled_black_title),
-                        isActive = viewModel.amoledBlack.collectAsState().value
-                    ) { viewModel.setAmoledBlack(!viewModel.amoledBlack.collectAsState().value) }
+                        isActive = amoledBlack.value
+                    ) { viewModel.setAmoledBlack(!amoledBlack.value) }
                 }
             }
             Divider(modifier = Modifier.padding(vertical = 4.dp))
@@ -250,12 +270,6 @@ fun SettingsPage(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 8.dp)
                     )
-                    val context = LocalContext.current
-                    val scope = rememberCoroutineScope()
-                    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                    val appName = context.getString(R.string.app_name)
-                    val versionName = packageInfo.versionName ?: "-"
-                    val packageName = context.packageName
                     Column(modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)) {
                         Text(text = "${stringResource(R.string.app_name_label)}: $appName", style = MaterialTheme.typography.bodyMedium)
                         Text(text = "${stringResource(R.string.app_version_label)}: $versionName", style = MaterialTheme.typography.bodyMedium)
