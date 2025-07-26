@@ -110,9 +110,9 @@ fun BaseWebView(
     val isLoading = remember { mutableStateOf(true) }
     val isError = state.errorsForCurrentRequest.lastOrNull()?.isFromMainFrame == true
 
-    var showSettingsPage by remember { mutableStateOf(false) }
-    if (showSettingsPage) {
-        SettingsPage(viewModel = viewModel, onClose = { showSettingsPage = false })
+    val showSettingsPage = remember { mutableStateOf(false) }
+    if (showSettingsPage.value) {
+        SettingsPage(viewModel = viewModel, onClose = { showSettingsPage.value = false })
         return
     }
 
@@ -214,9 +214,6 @@ fun BaseWebView(
                     // pinch to zoom doesn't work on settings refresh otherwise
                     settings.builtInZoomControls = true
                     settings.displayZoomControls = false
-                    settings.setAppCacheEnabled(true)
-                    settings.setAppCachePath(context.cacheDir.absolutePath)
-                    settings.setAppCacheMaxSize(10 * 1024 * 1024) // 10MB
                     settings.domStorageEnabled = true
                     settings.databaseEnabled = true
                     settings.cacheMode = if (isNetworkAvailable(context)) android.webkit.WebSettings.LOAD_DEFAULT else android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK
