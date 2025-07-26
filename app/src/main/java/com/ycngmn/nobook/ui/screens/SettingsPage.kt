@@ -143,6 +143,7 @@ fun AppearanceSettings(viewModel: NobookViewModel) {
     val stickyNavbar = viewModel.stickyNavbar.collectAsState()
     val pinchToZoom = viewModel.pinchToZoom.collectAsState()
     val amoledBlack = viewModel.amoledBlack.collectAsState()
+    val isAutoDesktop = com.ycngmn.nobook.utils.isAutoDesktop()
 
     SettingsGroup(title = stringResource(R.string.appearance_group)) {
         SheetItem(icon = R.drawable.adblock_24px, title = stringResource(R.string.remove_ads_title), isActive = removeAds.value) {
@@ -152,7 +153,6 @@ fun AppearanceSettings(viewModel: NobookViewModel) {
             viewModel.setEnableDownloadContent(!enableDownloadContent.value)
         }
         SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.desktop_layout_title), isActive = desktopLayout.value) {
-            val isAutoDesktop = com.ycngmn.nobook.utils.isAutoDesktop()
             if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value)
         }
         SheetItem(icon = R.drawable.immersive_mode_24px, title = stringResource(R.string.immersive_mode_title), isActive = immersiveMode.value) {
