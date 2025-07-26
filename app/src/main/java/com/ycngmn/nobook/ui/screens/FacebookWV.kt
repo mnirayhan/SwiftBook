@@ -60,7 +60,8 @@ fun FacebookWebView(
                 Script(viewModel.hideStories.value, R.raw.hide_stories, "$cdnBase/hide_stories.js"),
                 Script(viewModel.hidePeopleYouMayKnow.value, R.raw.hide_pymk, "$cdnBase/hide_pymk.js"),
                 Script(viewModel.hideGroups.value, R.raw.hide_groups, "$cdnBase/hide_groups.js"),
-                Script(!viewModel.desktopLayout.value, R.raw.messenger_scripts, "$cdnBase/messenger_scripts.js")
+                Script(!viewModel.desktopLayout.value, R.raw.messenger_scripts, "$cdnBase/messenger_scripts.js"),
+                Script(viewModel.facebookLiteMode.collectAsState().value && !viewModel.desktopLayout.value, R.raw.fb_lite_ui, "$cdnBase/fb_lite_ui.js") // FB Lite UI for mobile only if enabled
             )
 
             scope.launch {

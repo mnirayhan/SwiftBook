@@ -120,6 +120,14 @@ fun SheetContent(
             }
 
             SheetItem(
+                icon = R.drawable.computer_24px, // You may want a new icon for Lite Mode
+                title = stringResource(R.string.facebook_lite_mode_title),
+                isActive = viewModel.facebookLiteMode.collectAsState().value
+            ) {
+                viewModel.setFacebookLiteMode(!viewModel.facebookLiteMode.collectAsState().value)
+            }
+
+            SheetItem(
                 icon = R.drawable.customize_feed_24px,
                 title = stringResource(R.string.customize_feed_title),
                 tailIcon = R.drawable.chevron_forward_24px

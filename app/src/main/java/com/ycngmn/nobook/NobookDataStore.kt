@@ -24,6 +24,7 @@ class NobookDataStore(private val context: Context) {
         val HIDE_STORIES = booleanPreferencesKey("hide_stories")
         val HIDE_PEOPLE_YOU_MAY_KNOW = booleanPreferencesKey("hide_people_you_may_know")
         val HIDE_GROUPS = booleanPreferencesKey("hide_groups")
+        val FACEBOOK_LITE_MODE = booleanPreferencesKey("facebook_lite_mode")
 
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
     }
@@ -91,5 +92,10 @@ class NobookDataStore(private val context: Context) {
     val hideGroups = context.dataStore.data.map { it[HIDE_GROUPS] == true }
     suspend fun setHideGroups(hideGroups: Boolean) {
         context.dataStore.edit { it[HIDE_GROUPS] = hideGroups }
+    }
+
+    val facebookLiteMode = context.dataStore.data.map { it[FACEBOOK_LITE_MODE] == true }
+    suspend fun setFacebookLiteMode(facebookLiteMode: Boolean) {
+        context.dataStore.edit { it[FACEBOOK_LITE_MODE] = facebookLiteMode }
     }
 }
