@@ -38,6 +38,25 @@ import com.ycngmn.nobook.utils.jsBridge.NobookSettings
 import com.ycngmn.nobook.utils.jsBridge.ThemeChange
 import kotlinx.coroutines.delay
 import rememberImeHeight
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+
+
+fun isNetworkAvailable(context: android.content.Context): Boolean {
+    val cm = context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = cm.activeNetwork ?: return false
+    val capabilities = cm.getNetworkCapabilities(network) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+}
+
+fun clearOldCache(context: android.content.Context, maxAgeMillis: Long = 24 * 60 * 60 * 1000) {
+    val cacheDir = context.cacheDir
+    cacheDir.listFiles()?.forEach { file ->
+        if (System.currentTimeMillis() - file.lastModified() > maxAgeMillis) {
+            file.delete()
+        }
+    }
+}
 
 
 @Composable
@@ -195,6 +214,12 @@ fun BaseWebView(
                     // pinch to zoom doesn't work on settings refresh otherwise
                     settings.builtInZoomControls = true
                     settings.displayZoomControls = false
+                    settings.setAppCacheEnabled(true)
+                    settings.setAppCachePath(context.cacheDir.absolutePath)
+                    settings.setAppCacheMaxSize(10 * 1024 * 1024) // 10MB
+                    settings.domStorageEnabled = true
+                    settings.databaseEnabled = true
+                    settings.cacheMode = if (isNetworkAvailable(context)) android.webkit.WebSettings.LOAD_DEFAULT else android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK
                 }
             }
         )
