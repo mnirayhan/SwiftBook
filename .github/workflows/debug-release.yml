@@ -15,6 +15,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Set versionName and versionCode for debug build
+        run: |
+          # Use workflow_dispatch input if provided, else use branch name
+          VERSION_NAME="${{ github.event.inputs.debug_version || github.ref_name }}"
+          # Remove refs/heads/ if present
+          VERSION_NAME="${VERSION_NAME##*/}"
+          # Use date/time for versionCode to ensure uniqueness
+          VERSION_CODE=$(date +%y%m%d%H%M)
+          echo "Setting versionName=$VERSION_NAME, versionCode=$VERSION_CODE"
+          sed -i 's/versionName = ".*"/versionName = "'$VERSION_NAME'"/' app/build.gradle.kts
+          sed -i 's/versionCode = [0-9]\+/versionCode = '$VERSION_CODE'/' app/build.gradle.kts
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -34,9 +46,16 @@ jobs:
           ./gradlew assembleDebug --stacktrace || { echo "Gradle build failed"; exit 1; }
           ls -R app/build/outputs/apk || echo "No APK directory found"
 
+      - name: Rename Debug APK
+        run: |
+          VERSION_NAME=$(grep 'versionName = ' app/build.gradle.kts | head -1 | cut -d '"' -f2)
+          NEW_NAME="MetaPipe ${VERSION_NAME} debug.apk"
+          mv app/build/outputs/apk/debug/app-debug.apk "$NEW_NAME"
+          echo "APK renamed to $NEW_NAME"
+
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk-artifact
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: MetaPipe*debug.apk
           compression-level: 5
