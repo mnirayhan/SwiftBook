@@ -68,7 +68,12 @@ fun SheetContent(
     ) {
         // Feed Customization
         var showCustomizeFeedDialog by remember { mutableStateOf(false) }
-        GroupDropdown(title = stringResource(R.string.feed_customization_group), initiallyExpanded = true) {
+        var feedCustomizationExpanded by remember { mutableStateOf(true) }
+        GroupDropdown(
+            title = stringResource(R.string.feed_customization_group),
+            expanded = feedCustomizationExpanded,
+            onClick = { feedCustomizationExpanded = !feedCustomizationExpanded }
+        ) {
             SheetItem(icon = R.drawable.customize_feed_24px, title = stringResource(R.string.customize_feed_title), tailIcon = R.drawable.chevron_forward_24px) {
                 showCustomizeFeedDialog = true
             }
@@ -112,7 +117,12 @@ fun SheetContent(
         }
         Divider(modifier = Modifier.padding(vertical = 4.dp))
         // Appearance
-        GroupDropdown(title = stringResource(R.string.appearance_group)) {
+        var appearanceExpanded by remember { mutableStateOf(false) }
+        GroupDropdown(
+            title = stringResource(R.string.appearance_group),
+            expanded = appearanceExpanded,
+            onClick = { appearanceExpanded = !appearanceExpanded }
+        ) {
             SheetItem(icon = R.drawable.amoled_black_24px, title = stringResource(R.string.amoled_black_title), isActive = amoledBlack.value) { viewModel.setAmoledBlack(!amoledBlack.value) }
             SheetItem(icon = R.drawable.sticky_navbar_24px, title = stringResource(R.string.sticky_navbar_title), isActive = stickyNavbar.value) { viewModel.setStickyNavbar(!stickyNavbar.value) }
             SheetItem(icon = R.drawable.immersive_mode_24px, title = stringResource(R.string.immersive_mode_title), isActive = immersiveMode.value) { viewModel.setImmersiveMode(!immersiveMode.value) }
@@ -120,7 +130,12 @@ fun SheetContent(
         }
         Divider(modifier = Modifier.padding(vertical = 4.dp))
         // General
-        GroupDropdown(title = stringResource(R.string.general_group)) {
+        var generalExpanded by remember { mutableStateOf(false) }
+        GroupDropdown(
+            title = stringResource(R.string.general_group),
+            expanded = generalExpanded,
+            onClick = { generalExpanded = !generalExpanded }
+        ) {
             SheetItem(icon = R.drawable.adblock_24px, title = stringResource(R.string.remove_ads_title), isActive = removeAds.value) { viewModel.setRemoveAds(!removeAds.value) }
             SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.download_content_title), isActive = enableDownloadContent.value) { viewModel.setEnableDownloadContent(!enableDownloadContent.value) }
             SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.desktop_layout_title), isActive = desktopLayout.value) { if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value) }
