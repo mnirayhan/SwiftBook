@@ -28,7 +28,6 @@ fun FacebookWebView(
     val isDesktop = viewModel.desktopLayout.collectAsState()
     val isAutoDesktop = isAutoDesktop()
     val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
-		val muteKeywords = viewModel.muteKeywords.collectAsState()
 
     LaunchedEffect(Unit) {
         if (isAutoDesktop && !isDesktop.value) {
@@ -50,7 +49,6 @@ fun FacebookWebView(
         onPostLoad = {
             val cdnBase = "https://raw.githubusercontent.com/ycngmn/Nobook/refs/heads/main/app/src/main/res/raw"
 
-            val muteKeywordsScript = "window.nobookMuteKeywords = '" + muteKeywords.value.replace("'", "\\'") + "';"
             val scripts = listOf(
                 Script(true, R.raw.scripts, "$cdnBase/scripts.js"), // always apply
                 Script(viewModel.removeAds.value, R.raw.adblock, "$cdnBase/adblock.js"),
@@ -69,8 +67,7 @@ fun FacebookWebView(
 
             scope.launch {
                 withContext(Dispatchers.IO) {
-                    val scriptsString = muteKeywordsScript + fetchScripts(scripts, context)
-                    viewModel.scripts.value = scriptsString
+                    viewModel.scripts.value = fetchScripts(scripts, context)
                 }
             }
         }

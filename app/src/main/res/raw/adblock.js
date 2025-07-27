@@ -67,7 +67,7 @@
                         // Check direct text
                         if (sponsoredRegex.test(element.textContent || '')) {
                             found = true;
-                } else {
+                        } else {
                             // Check for specific spans/divs with sponsored text
                             const spans = element.querySelectorAll('span, div, a');
                             for (const span of spans) {
@@ -130,11 +130,11 @@
                 }
             });
 
-          observer.observe(document.body, {
-            childList: true,
+            observer.observe(document.body, {
+                childList: true,
                 subtree: true,
                 attributes: false
-          });
+            });
         })();
         return;
     }
