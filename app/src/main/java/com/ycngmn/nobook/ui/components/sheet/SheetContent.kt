@@ -81,9 +81,9 @@ fun SheetContent(
                 ) {
                     isOpenDialog.value = true
                 }
-                if (isOpenDialog.value) HideOptionsDialog(viewModel) {
-                    isOpenDialog.value = false
-                }
+            }
+            if (isOpenDialog.value) HideOptionsDialog(viewModel) {
+                isOpenDialog.value = false
             }
 
             // Appearance Group

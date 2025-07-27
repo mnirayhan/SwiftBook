@@ -19,7 +19,7 @@ class NobookDataStore(private val context: Context) {
         val STICKY_NAVBAR = booleanPreferencesKey("sticky_navbar")
         val PINCH_TO_ZOOM = booleanPreferencesKey("pinch_to_zoom")
         val AMOLED_BLACK = booleanPreferencesKey("amoled_black")
-        val HIDE_SUGGESTED = booleanPreferencesKey("hide_suggestion")
+        val HIDE_SUGGESTED = booleanPreferencesKey("hide_suggested")
         val HIDE_REELS = booleanPreferencesKey("hide_reels")
         val HIDE_STORIES = booleanPreferencesKey("hide_stories")
         val HIDE_PEOPLE_YOU_MAY_KNOW = booleanPreferencesKey("hide_people_you_may_know")
