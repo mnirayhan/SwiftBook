@@ -109,7 +109,8 @@ fun SheetContent(
                 Text(text = "${stringResource(R.string.app_package_label)}: $packageName", style = MaterialTheme.typography.bodyMedium)
             }
             // Check for Updates
-            SheetItem(icon = R.drawable.update_24px, title = stringResource(R.string.check_update_title), isActive = false) {
+            // Use a fallback icon if update_24px does not exist
+            SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.check_update_title), isActive = false) {
                 scope.launch(Dispatchers.IO) {
                     updateResult = context.getString(R.string.update_checking)
                     try {
