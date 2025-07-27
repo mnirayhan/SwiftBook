@@ -25,7 +25,6 @@ class NobookDataStore(private val context: Context) {
         val HIDE_PEOPLE_YOU_MAY_KNOW = booleanPreferencesKey("hide_people_you_may_know")
         val HIDE_GROUPS = booleanPreferencesKey("hide_groups")
         val FACEBOOK_LITE_MODE = booleanPreferencesKey("facebook_lite_mode")
-        val MUTE_KEYWORDS = androidx.datastore.preferences.core.stringPreferencesKey("mute_keywords")
 
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
     }
@@ -98,10 +97,5 @@ class NobookDataStore(private val context: Context) {
     val facebookLiteMode = context.dataStore.data.map { it[FACEBOOK_LITE_MODE] == true }
     suspend fun setFacebookLiteMode(facebookLiteMode: Boolean) {
         context.dataStore.edit { it[FACEBOOK_LITE_MODE] = facebookLiteMode }
-    }
-
-    val muteKeywords = context.dataStore.data.map { it[MUTE_KEYWORDS] ?: "" }
-    suspend fun setMuteKeywords(muteKeywords: String) {
-        context.dataStore.edit { it[MUTE_KEYWORDS] = muteKeywords }
     }
 }

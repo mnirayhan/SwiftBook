@@ -38,25 +38,6 @@ import com.ycngmn.nobook.utils.jsBridge.NobookSettings
 import com.ycngmn.nobook.utils.jsBridge.ThemeChange
 import kotlinx.coroutines.delay
 import rememberImeHeight
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-
-
-fun isNetworkAvailable(context: android.content.Context): Boolean {
-    val cm = context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val network = cm.activeNetwork ?: return false
-    val capabilities = cm.getNetworkCapabilities(network) ?: return false
-    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-}
-
-fun clearOldCache(context: android.content.Context, maxAgeMillis: Long = 24 * 60 * 60 * 1000) {
-    val cacheDir = context.cacheDir
-    cacheDir.listFiles()?.forEach { file ->
-        if (System.currentTimeMillis() - file.lastModified() > maxAgeMillis) {
-            file.delete()
-        }
-    }
-}
 
 
 @Composable
@@ -110,12 +91,7 @@ fun BaseWebView(
     val isLoading = remember { mutableStateOf(true) }
     val isError = state.errorsForCurrentRequest.lastOrNull()?.isFromMainFrame == true
 
-    val showSettingsPage = remember { mutableStateOf(false) }
-    if (showSettingsPage.value) {
-        SettingsPage(viewModel = viewModel, onClose = { showSettingsPage.value = false })
-        return
-    }
-
+    val settingsToggle = remember { mutableStateOf(false) }
     val themeColor = viewModel.themeColor
     val isImmersiveMode = viewModel.immersiveMode.collectAsState()
 
@@ -154,6 +130,10 @@ fun BaseWebView(
         NetworkErrorDialog(context)
         return
     }
+
+    if (settingsToggle.value) NobookSheet(viewModel, settingsToggle, onRestart)
+    // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
+    if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
 
     if (isLoading.value) SplashLoading(state.loadingState)
 
@@ -198,7 +178,7 @@ fun BaseWebView(
                 }
 
                 webView.apply {
-                    addJavascriptInterface(NobookSettings(showSettingsPage), "SettingsBridge")
+                    addJavascriptInterface(NobookSettings(settingsToggle), "SettingsBridge")
                     addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
                     addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
                     addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")
@@ -214,9 +194,6 @@ fun BaseWebView(
                     // pinch to zoom doesn't work on settings refresh otherwise
                     settings.builtInZoomControls = true
                     settings.displayZoomControls = false
-                    settings.domStorageEnabled = true
-                    settings.databaseEnabled = true
-                    settings.cacheMode = if (isNetworkAvailable(context)) android.webkit.WebSettings.LOAD_DEFAULT else android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK
                 }
             }
         )
