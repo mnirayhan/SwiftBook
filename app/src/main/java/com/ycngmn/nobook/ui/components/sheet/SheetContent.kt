@@ -274,3 +274,35 @@ private fun HideOptionsDialog(viewModel: NobookViewModel, onClose: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun GroupDropdown(
+    title: String,
+    expanded: Boolean,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = if (expanded) "▲" else "▼",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        if (expanded) {
+            content()
+        }
+    }
+}
