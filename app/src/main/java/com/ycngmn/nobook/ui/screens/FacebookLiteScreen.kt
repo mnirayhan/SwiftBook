@@ -194,7 +194,7 @@ fun FacebookLiteScreen(onBackToNormal: () -> Unit) {
                     },
                     containerColor = Color(0xFF1877F2)
                 ) {
-                    Icon(Icons.Default.ArrowUpward, contentDescription = "Scroll to top", tint = Color.White)
+                    Icon(Icons.Filled.ArrowUpward, contentDescription = "Scroll to top", tint = Color.White)
                 }
             }
             // Post Composer FAB
@@ -416,7 +416,7 @@ fun BottomNavigationBarLite(
         NavigationBarItem(
             selected = true,
             onClick = {},
-            icon = { Icon(Icons.Default.ArrowUpward, contentDescription = "Feed") },
+            icon = { Icon(Icons.Filled.ArrowUpward, contentDescription = "Feed") },
             label = { Text("Feed") }
         )
         NavigationBarItem(
