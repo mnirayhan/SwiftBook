@@ -1,26 +1,47 @@
 <resources>
-    <string name="app_name">MetaPipe</string>
 
-    <!-- Bottom Text and Buttons -->
-    <string name="apply_immediately">Apply Immediately?</string>
-    <string name="close_menu">Close Menu</string>
+<string name="app_name">MetaPipe</string>
 
-    <!-- Dialog Items -->
-    <string name="hide_suggested_title">Hide suggested posts</string>
-    <string name="hide_reels_title">Hide reels</string>
-    <string name="hide_stories_title">Hide stories</string>
-    <string name="hide_people_you_may_know_title">Hide people you may know</string>
-    <string name="hide_groups_title">Hide group suggestions</string>
+<!-- Bottom Text and Buttons -->
+<string name="apply_immediately">Apply Immediately?</string>
+<string name="close_menu">Close Menu</string>
 
-    <!-- Sheet Items -->
-    <string name="remove_ads_title">Remove ads</string>
-    <string name="download_content_title">Download contents</string>
-    <string name="desktop_layout_title">Desktop layout</string>
-    <string name="immersive_mode_title">Immersive mode</string>
-    <string name="facebook_lite_mode_title">Facebook Lite Mode</string>
-    <string name="sticky_navbar_title">Sticky Navbar</string>
-    <string name="pinch_to_zoom_title">Pinch to zoom</string>
-    <string name="amoled_black_title">AMOLED Black</string>
-    <string name="customize_feed_title">Customize feed</string>
-    <string name="follow_at_github">Follow us on Github</string>
+<!-- Dialog Items -->
+<string name="hide_suggested_title">Hide suggested posts</string>
+<string name="hide_reels_title">Hide reels</string>
+<string name="hide_stories_title">Hide stories</string>
+<string name="hide_people_you_may_know_title">Hide people you may know</string>
+<string name="hide_groups_title">Hide group suggestions</string>
+
+<!-- Sheet Items -->
+<string name="remove_ads_title">Remove ads</string>
+<string name="download_content_title">Download contents</string>
+<string name="desktop_layout_title">Desktop layout</string>
+<string name="immersive_mode_title">Immersive mode</string>
+<string name="facebook_lite_mode_title">Facebook Lite Mode</string>
+<string name="sticky_navbar_title">Sticky Navbar</string>
+<string name="pinch_to_zoom_title">Pinch to zoom</string>
+<string name="amoled_black_title">AMOLED Black</string>
+<string name="customize_feed_title">Customize feed</string>
+<string name="follow_at_github">Follow us on Github</string>
+
+<string name="feed_customization_group">Feed Customization</string>
+<string name="appearance_group">Appearance</string>
+<string name="general_group">General</string>
+<string name="app_details_title">App Details</string>
+<string name="app_name_label">App Name</string>
+<string name="app_version_label">Version</string>
+<string name="app_package_label">Package Name</string>
+
+<string name="mute_keywords_title">Keyword/Hashtag Mute</string>
+<string name="mute_keywords_summary">Block posts with specific keywords, phrases, or hashtags.</string>
+<string name="mute_keywords_hint">Enter keywords or hashtags, separated by commas</string>
+<string name="mute_keywords_save">Save</string>
+<string name="mute_keywords_cancel">Cancel</string>
+
+<string name="check_update_title">Check for Updates</string>
+<string name="update_up_to_date">App is up-to-date</string>
+<string name="update_checking">Checking for updates...</string>
+<string name="update_available">Update available!</string>
+
 </resources>
