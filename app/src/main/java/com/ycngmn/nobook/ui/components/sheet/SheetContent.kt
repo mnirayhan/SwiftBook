@@ -63,91 +63,114 @@ fun SheetContent(
             modifier = Modifier
                 .padding(vertical = 12.dp)
         ) {
-            SheetItem(
-                icon = R.drawable.adblock_24px,
-                title = stringResource(R.string.remove_ads_title),
-                isActive = removeAds.value
+            // Dropdown states for each group
+            val feedCustomizationExpanded = remember { mutableStateOf(true) }
+            val appearanceExpanded = remember { mutableStateOf(false) }
+            val generalExpanded = remember { mutableStateOf(false) }
+
+            // Feed Customization Group
+            GroupDropdown(
+                title = stringResource(R.string.feed_customization_group),
+                expanded = feedCustomizationExpanded.value,
+                onClick = { feedCustomizationExpanded.value = !feedCustomizationExpanded.value }
             ) {
-                viewModel.setRemoveAds(!removeAds.value)
+                if (feedCustomizationExpanded.value) {
+                    SheetItem(
+                        icon = R.drawable.customize_feed_24px,
+                        title = stringResource(R.string.customize_feed_title),
+                        tailIcon = R.drawable.chevron_forward_24px
+                    ) {
+                        isOpenDialog.value = true
+                    }
+                    if (isOpenDialog.value) HideOptionsDialog(viewModel) {
+                        isOpenDialog.value = false
+                    }
+                }
             }
 
-            SheetItem(
-                icon = R.drawable.download_24px,
-                title = stringResource(R.string.download_content_title),
-                isActive = enableDownloadContent.value
+            // Appearance Group
+            GroupDropdown(
+                title = stringResource(R.string.appearance_group),
+                expanded = appearanceExpanded.value,
+                onClick = { appearanceExpanded.value = !appearanceExpanded.value }
             ) {
-                viewModel.setEnableDownloadContent(!enableDownloadContent.value)
+                if (appearanceExpanded.value) {
+                    SheetItem(
+                        icon = R.drawable.amoled_black_24px,
+                        title = stringResource(R.string.amoled_black_title),
+                        isActive = amoledBlack.value,
+                    ) {
+                        viewModel.setAmoledBlack(!amoledBlack.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.sticky_navbar_24px,
+                        title = stringResource(R.string.sticky_navbar_title),
+                        isActive = stickyNavbar.value
+                    ) {
+                        viewModel.setStickyNavbar(!stickyNavbar.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.immersive_mode_24px,
+                        title = stringResource(R.string.immersive_mode_title),
+                        isActive = immersiveMode.value
+                    ) {
+                        viewModel.setImmersiveMode(!immersiveMode.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.pinch_zoom_out_24px,
+                        title = stringResource(R.string.pinch_to_zoom_title),
+                        isActive = pinchToZoom.value
+                    ) {
+                        viewModel.setPinchToZoom(!pinchToZoom.value)
+                    }
+                }
             }
 
-            SheetItem(
-                icon = R.drawable.pinch_zoom_out_24px,
-                title = stringResource(R.string.pinch_to_zoom_title),
-                isActive = pinchToZoom.value
+            // General Group
+            GroupDropdown(
+                title = stringResource(R.string.general_group),
+                expanded = generalExpanded.value,
+                onClick = { generalExpanded.value = !generalExpanded.value }
             ) {
-                viewModel.setPinchToZoom(!pinchToZoom.value)
-            }
-
-            val isAutoDesktop = isAutoDesktop()
-            SheetItem(
-                icon = R.drawable.computer_24px,
-                title = stringResource(R.string.desktop_layout_title),
-                isActive = desktopLayout.value
-            ) {
-                if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value)
-            }
-
-            SheetItem(
-                icon = R.drawable.immersive_mode_24px,
-                title = stringResource(R.string.immersive_mode_title),
-                isActive = immersiveMode.value
-            ) {
-                viewModel.setImmersiveMode(!immersiveMode.value)
-            }
-
-            SheetItem(
-                icon = R.drawable.sticky_navbar_24px,
-                title = stringResource(R.string.sticky_navbar_title),
-                isActive = stickyNavbar.value
-            ) {
-                viewModel.setStickyNavbar(!stickyNavbar.value)
-            }
-
-            SheetItem(
-                icon = R.drawable.amoled_black_24px,
-                title = stringResource(R.string.amoled_black_title),
-                isActive = amoledBlack.value,
-            ) {
-                viewModel.setAmoledBlack(!amoledBlack.value)
-            }
-
-            SheetItem(
-                icon = R.drawable.computer_24px, // You may want a new icon for Lite Mode
-                title = stringResource(R.string.facebook_lite_mode_title),
-                isActive = facebookLiteMode.value
-            ) {
-                viewModel.setFacebookLiteMode(!facebookLiteMode.value)
-            }
-
-            SheetItem(
-                icon = R.drawable.customize_feed_24px,
-                title = stringResource(R.string.customize_feed_title),
-                tailIcon = R.drawable.chevron_forward_24px
-
-            ) {
-                isOpenDialog.value = true
-            }
-
-            if (isOpenDialog.value) HideOptionsDialog(viewModel) {
-                isOpenDialog.value = false
-            }
-
-            SheetItem(
-                icon = R.drawable.github_mark_white,
-                title = stringResource(R.string.follow_at_github),
-                tailIcon = R.drawable.arrow_outward_24px
-            ) {
-                val intent = Intent(Intent.ACTION_VIEW, "https://github.com/mnirayhan/metapipe".toUri())
-                context.startActivity(intent)
+                if (generalExpanded.value) {
+                    SheetItem(
+                        icon = R.drawable.adblock_24px,
+                        title = stringResource(R.string.remove_ads_title),
+                        isActive = removeAds.value
+                    ) {
+                        viewModel.setRemoveAds(!removeAds.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.download_24px,
+                        title = stringResource(R.string.download_content_title),
+                        isActive = enableDownloadContent.value
+                    ) {
+                        viewModel.setEnableDownloadContent(!enableDownloadContent.value)
+                    }
+                    val isAutoDesktop = isAutoDesktop()
+                    SheetItem(
+                        icon = R.drawable.computer_24px,
+                        title = stringResource(R.string.desktop_layout_title),
+                        isActive = desktopLayout.value
+                    ) {
+                        if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.computer_24px, // You may want a new icon for Lite Mode
+                        title = stringResource(R.string.facebook_lite_mode_title),
+                        isActive = facebookLiteMode.value
+                    ) {
+                        viewModel.setFacebookLiteMode(!facebookLiteMode.value)
+                    }
+                    SheetItem(
+                        icon = R.drawable.github_mark_white,
+                        title = stringResource(R.string.follow_at_github),
+                        tailIcon = R.drawable.arrow_outward_24px
+                    ) {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/mnirayhan/metapipe".toUri())
+                        context.startActivity(intent)
+                    }
+                }
             }
 
             Row(
