@@ -64,10 +64,8 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
     private val _facebookLiteMode = MutableStateFlow(false)
     val facebookLiteMode = _facebookLiteMode.asStateFlow()
 
-
     private val _isRevertDesktop = mutableStateOf(false)
     val isRevertDesktop = _isRevertDesktop
-
 
     init {
         runBlocking {
@@ -85,7 +83,6 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
             _hideGroups.value = dataStore.hideGroups.first()
             _facebookLiteMode.value = dataStore.facebookLiteMode.first()
             _muteKeywords.value = dataStore.muteKeywords.first()
-
             _isRevertDesktop.value = dataStore.revertDesktop.first()
         }
     }
@@ -180,7 +177,6 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
         }
         _facebookLiteMode.value = facebookLiteMode
     }
-
 
     fun setMuteKeywords(muteKeywords: String) {
         viewModelScope.launch {
