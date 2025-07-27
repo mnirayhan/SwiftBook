@@ -139,9 +139,9 @@ fun SheetContent(
             SheetItem(icon = R.drawable.adblock_24px, title = stringResource(R.string.remove_ads_title), isActive = removeAds.value) { viewModel.setRemoveAds(!removeAds.value) }
             SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.download_content_title), isActive = enableDownloadContent.value) { viewModel.setEnableDownloadContent(!enableDownloadContent.value) }
             SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.desktop_layout_title), isActive = desktopLayout.value) { if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value) }
-            SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.facebook_lite_mode_title), isActive = false, showToggle = false) { onOpenFacebookLite() }
+            SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.facebook_lite_mode_title), isActive = false) { onOpenFacebookLite() }
             // Check for Updates (icon, not toggle)
-            SheetItem(icon = R.drawable.reload_24px, title = stringResource(R.string.check_update_title), tailIcon = R.drawable.reload_24px, isActive = false, showToggle = false) {
+            SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.check_update_title), tailIcon = R.drawable.download_24px, isActive = false) {
                 scope.launch(Dispatchers.IO) {
                     updateResult = context.getString(R.string.update_checking)
                     try {
@@ -164,7 +164,7 @@ fun SheetContent(
                 Text(text = updateResult!!, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 16.dp, bottom = 8.dp))
             }
             // Follow Us on GitHub (redirect icon, not toggle)
-            SheetItem(icon = R.drawable.github_mark_white, title = stringResource(R.string.follow_at_github), tailIcon = R.drawable.arrow_outward_24px, isActive = false, showToggle = false) {
+            SheetItem(icon = R.drawable.github_mark_white, title = stringResource(R.string.follow_at_github), tailIcon = R.drawable.arrow_outward_24px, isActive = false) {
                 val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/mnirayhan/metapipe"))
                 context.startActivity(intent)
             }
