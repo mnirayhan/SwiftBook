@@ -115,7 +115,7 @@ fun SheetContent(
                 )
             }
         }
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
         // Appearance
         var appearanceExpanded by remember { mutableStateOf(false) }
         GroupDropdown(
@@ -128,7 +128,7 @@ fun SheetContent(
             SheetItem(icon = R.drawable.immersive_mode_24px, title = stringResource(R.string.immersive_mode_title), isActive = immersiveMode.value) { viewModel.setImmersiveMode(!immersiveMode.value) }
             SheetItem(icon = R.drawable.pinch_zoom_out_24px, title = stringResource(R.string.pinch_to_zoom_title), isActive = pinchToZoom.value) { viewModel.setPinchToZoom(!pinchToZoom.value) }
         }
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
         // General
         var generalExpanded by remember { mutableStateOf(false) }
         GroupDropdown(
