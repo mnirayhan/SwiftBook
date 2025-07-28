@@ -5,13 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -74,27 +68,51 @@ fun SheetContent(
             expanded = feedCustomizationExpanded,
             onClick = { feedCustomizationExpanded = !feedCustomizationExpanded }
         ) {
-            SheetItem(icon = R.drawable.customize_feed_24px, title = stringResource(R.string.customize_feed_title), tailIcon = R.drawable.chevron_forward_24px) {
+            SheetItem(
+                icon = R.drawable.customize_feed_24px,
+                title = stringResource(R.string.customize_feed_title),
+                tailIcon = R.drawable.chevron_forward_24px
+            ) {
                 showCustomizeFeedDialog = true
             }
+
             if (showCustomizeFeedDialog) {
                 Dialog(onDismissRequest = { showCustomizeFeedDialog = false }) {
                     Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surface) {
                         Column(modifier = Modifier.padding(24.dp)) {
-                            Text(text = stringResource(R.string.customize_feed_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text(
+                                text = stringResource(R.string.customize_feed_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(text = stringResource(R.string.customize_feed_dialog_content))
                             Spacer(modifier = Modifier.height(16.dp))
-                            Button(onClick = { showCustomizeFeedDialog = false }, modifier = Modifier.align(Alignment.End)) {
+                            Button(
+                                onClick = { showCustomizeFeedDialog = false },
+                                modifier = Modifier.align(Alignment.End)
+                            ) {
                                 Text(stringResource(R.string.close_menu))
                             }
                         }
                     }
                 }
             }
-            Text(text = stringResource(R.string.mute_keywords_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp, start = 8.dp))
-            Text(text = stringResource(R.string.mute_keywords_summary), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 16.dp, bottom = 4.dp))
-            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+
+            Text(
+                text = stringResource(R.string.mute_keywords_title),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.mute_keywords_summary),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
+            )
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 OutlinedTextField(
                     value = keywordInput,
                     onValueChange = { keywordInput = it },
@@ -115,7 +133,9 @@ fun SheetContent(
                 )
             }
         }
+
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
         // Appearance
         var appearanceExpanded by remember { mutableStateOf(false) }
         GroupDropdown(
@@ -123,12 +143,38 @@ fun SheetContent(
             expanded = appearanceExpanded,
             onClick = { appearanceExpanded = !appearanceExpanded }
         ) {
-            SheetItem(icon = R.drawable.amoled_black_24px, title = stringResource(R.string.amoled_black_title), isActive = amoledBlack.value) { viewModel.setAmoledBlack(!amoledBlack.value) }
-            SheetItem(icon = R.drawable.sticky_navbar_24px, title = stringResource(R.string.sticky_navbar_title), isActive = stickyNavbar.value) { viewModel.setStickyNavbar(!stickyNavbar.value) }
-            SheetItem(icon = R.drawable.immersive_mode_24px, title = stringResource(R.string.immersive_mode_title), isActive = immersiveMode.value) { viewModel.setImmersiveMode(!immersiveMode.value) }
-            SheetItem(icon = R.drawable.pinch_zoom_out_24px, title = stringResource(R.string.pinch_to_zoom_title), isActive = pinchToZoom.value) { viewModel.setPinchToZoom(!pinchToZoom.value) }
+            SheetItem(
+                icon = R.drawable.amoled_black_24px,
+                title = stringResource(R.string.amoled_black_title),
+                isActive = amoledBlack.value
+            ) {
+                viewModel.setAmoledBlack(!amoledBlack.value)
+            }
+            SheetItem(
+                icon = R.drawable.sticky_navbar_24px,
+                title = stringResource(R.string.sticky_navbar_title),
+                isActive = stickyNavbar.value
+            ) {
+                viewModel.setStickyNavbar(!stickyNavbar.value)
+            }
+            SheetItem(
+                icon = R.drawable.immersive_mode_24px,
+                title = stringResource(R.string.immersive_mode_title),
+                isActive = immersiveMode.value
+            ) {
+                viewModel.setImmersiveMode(!immersiveMode.value)
+            }
+            SheetItem(
+                icon = R.drawable.pinch_zoom_out_24px,
+                title = stringResource(R.string.pinch_to_zoom_title),
+                isActive = pinchToZoom.value
+            ) {
+                viewModel.setPinchToZoom(!pinchToZoom.value)
+            }
         }
+
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
         // General
         var generalExpanded by remember { mutableStateOf(false) }
         GroupDropdown(
@@ -136,12 +182,42 @@ fun SheetContent(
             expanded = generalExpanded,
             onClick = { generalExpanded = !generalExpanded }
         ) {
-            SheetItem(icon = R.drawable.adblock_24px, title = stringResource(R.string.remove_ads_title), isActive = removeAds.value) { viewModel.setRemoveAds(!removeAds.value) }
-            SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.download_content_title), isActive = enableDownloadContent.value) { viewModel.setEnableDownloadContent(!enableDownloadContent.value) }
-            SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.desktop_layout_title), isActive = desktopLayout.value) { if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value) }
-            SheetItem(icon = R.drawable.computer_24px, title = stringResource(R.string.facebook_lite_mode_title), isActive = false) { onOpenFacebookLite() }
+            SheetItem(
+                icon = R.drawable.adblock_24px,
+                title = stringResource(R.string.remove_ads_title),
+                isActive = removeAds.value
+            ) {
+                viewModel.setRemoveAds(!removeAds.value)
+            }
+            SheetItem(
+                icon = R.drawable.download_24px,
+                title = stringResource(R.string.download_content_title),
+                isActive = enableDownloadContent.value
+            ) {
+                viewModel.setEnableDownloadContent(!enableDownloadContent.value)
+            }
+            SheetItem(
+                icon = R.drawable.computer_24px,
+                title = stringResource(R.string.desktop_layout_title),
+                isActive = desktopLayout.value
+            ) {
+                if (!isAutoDesktop) viewModel.setDesktopLayout(!desktopLayout.value)
+            }
+            SheetItem(
+                icon = R.drawable.computer_24px,
+                title = stringResource(R.string.facebook_lite_mode_title),
+                isActive = false
+            ) {
+                onOpenFacebookLite()
+            }
+
             // Check for Updates (icon, not toggle)
-            SheetItem(icon = R.drawable.download_24px, title = stringResource(R.string.check_update_title), tailIcon = R.drawable.download_24px, isActive = false) {
+            SheetItem(
+                icon = R.drawable.download_24px,
+                title = stringResource(R.string.check_update_title),
+                tailIcon = R.drawable.download_24px,
+                isActive = false
+            ) {
                 scope.launch(Dispatchers.IO) {
                     updateResult = context.getString(R.string.update_checking)
                     try {
@@ -160,28 +236,55 @@ fun SheetContent(
                     }
                 }
             }
+
             if (updateResult != null) {
-                Text(text = updateResult!!, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 16.dp, bottom = 8.dp))
+                Text(
+                    text = updateResult!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                )
             }
+
             // Follow Us on GitHub (redirect icon, not toggle)
-            SheetItem(icon = R.drawable.github_mark_white, title = stringResource(R.string.follow_at_github), tailIcon = R.drawable.arrow_outward_24px, isActive = false) {
+            SheetItem(
+                icon = R.drawable.github_mark_white,
+                title = stringResource(R.string.follow_at_github),
+                tailIcon = R.drawable.arrow_outward_24px,
+                isActive = false
+            ) {
                 val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/mnirayhan/metapipe"))
                 context.startActivity(intent)
             }
+
             // App Details (moved to bottom)
-            Text(text = stringResource(R.string.app_details_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp, start = 8.dp))
+            Text(
+                text = stringResource(R.string.app_details_title),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+            )
             Column(modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)) {
-                Text(text = "${stringResource(R.string.app_name_label)}: $appName", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "${stringResource(R.string.app_version_label)}: $versionName", style = MaterialTheme.typography.bodyMedium)
-                Text(text = "${stringResource(R.string.app_package_label)}: $packageName", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "${stringResource(R.string.app_name_label)}: $appName",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "${stringResource(R.string.app_version_label)}: $versionName",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "${stringResource(R.string.app_package_label)}: $packageName",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
+
         Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
         ) {
-            Card  (
+            Card(
                 modifier = Modifier.clickable { onRestart() },
                 shape = RoundedCornerShape(6.dp),
                 elevation = CardDefaults.cardElevation(2.dp),
@@ -194,20 +297,22 @@ fun SheetContent(
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(5.dp)
+                    modifier = Modifier.padding(5.dp)
                 )
             }
 
-            VerticalDivider(Modifier.height(30.dp), color = Color.Gray, thickness = 2.dp)
+            VerticalDivider(
+                Modifier.height(30.dp),
+                color = Color.Gray,
+                thickness = 2.dp
+            )
 
-            Card  (
+            Card(
                 shape = RoundedCornerShape(6.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
             ) {
-
                 Text(
                     text = stringResource(R.string.close_menu),
                     fontSize = 16.sp,
@@ -218,6 +323,51 @@ fun SheetContent(
                         .clickable { onClose() }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun SheetItem(
+    icon: Int,
+    title: String,
+    tailIcon: Int? = null,
+    isActive: Boolean = false,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+        if (tailIcon != null) {
+            Icon(
+                painter = painterResource(id = tailIcon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(20.dp)
+            )
+        } else if (isActive) {
+            Switch(
+                checked = isActive,
+                onCheckedChange = { onClick() },
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
