@@ -1,5 +1,3 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.ycngmn.nobook.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
@@ -13,7 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
@@ -194,7 +192,7 @@ fun FacebookLiteScreen(onBackToNormal: () -> Unit) {
                     },
                     containerColor = Color(0xFF1877F2)
                 ) {
-                    Icon(Icons.Filled.ArrowUpward, contentDescription = "Scroll to top", tint = Color.White)
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Scroll to top", tint = Color.White)
                 }
             }
             // Post Composer FAB
@@ -416,7 +414,7 @@ fun BottomNavigationBarLite(
         NavigationBarItem(
             selected = true,
             onClick = {},
-            icon = { Icon(Icons.Filled.ArrowUpward, contentDescription = "Feed") },
+            icon = { Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Feed") },
             label = { Text("Feed") }
         )
         NavigationBarItem(
