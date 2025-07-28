@@ -327,50 +327,7 @@ fun SheetContent(
     }
 }
 
-@Composable
-fun SheetItem(
-    icon: Int,
-    title: String,
-    tailIcon: Int? = null,
-    isActive: Boolean = false,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
-        if (tailIcon != null) {
-            Icon(
-                painter = painterResource(id = tailIcon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(20.dp)
-            )
-        } else if (isActive) {
-            Switch(
-                checked = isActive,
-                onCheckedChange = { onClick() },
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
+
 
 @Composable
 fun GroupDropdown(
