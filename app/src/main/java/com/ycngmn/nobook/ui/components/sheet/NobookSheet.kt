@@ -37,7 +37,7 @@ fun NobookSheet(
             onDismissRequest = { openBottomSheet.value = false },
             sheetState = bottomSheetState,
         ) {
-            SheetContent(viewModel,onRestart, closeSheet)
+            SheetContent(viewModel, onRestart, closeSheet, onOpenFacebookLite = {})
         }
     }
 }

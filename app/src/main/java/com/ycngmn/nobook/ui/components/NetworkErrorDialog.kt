@@ -41,7 +41,7 @@ fun NetworkErrorDialog(context: Context) {
             )
 
             Text(
-                "To use Nobook, turn on mobile data or connect to Wi-Fi.",
+                "To use MetaPipe, turn on mobile data or connect to Wi-Fi.",
                 fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 20.dp),
                 color = MaterialTheme.colorScheme.secondary
