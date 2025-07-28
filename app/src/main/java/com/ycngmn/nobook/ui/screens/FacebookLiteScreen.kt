@@ -1,3 +1,4 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
 package com.ycngmn.nobook.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
