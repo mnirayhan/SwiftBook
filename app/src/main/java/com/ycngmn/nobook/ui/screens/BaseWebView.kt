@@ -57,13 +57,11 @@ fun BaseWebView(
     val navigator = rememberWebViewNavigator(requestInterceptor =
         ExternalRequestInterceptor(context = context, onInterceptAction))
 
-
-
     // allow exiting while scrolling to top.
     val exit = remember { mutableStateOf(false) }
     LaunchedEffect(exit.value) {
         if (exit.value) {
-            delay(800)
+            delay(600)
             exit.value = false
         }
     }
@@ -82,7 +80,6 @@ fun BaseWebView(
             else exit.value = true
         }
     }
-
 
     // Navigate to Nobook on fb logo pressed from messenger.
     val navTrigger = remember { mutableStateOf(false) }
@@ -131,12 +128,6 @@ fun BaseWebView(
         return
     }
 
-    if (settingsToggle.value) NobookSheet(viewModel, settingsToggle, onRestart)
-    // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
-    if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
-
-    if (isLoading.value) SplashLoading(state.loadingState)
-
     val wvModifier = Modifier
         .fillMaxSize()
         .background(themeColor.value)
@@ -145,57 +136,103 @@ fun BaseWebView(
     val imeHeight = rememberImeHeight()
 
     // we limit the recomposition to specific cases with the condition.
-    key(if (isAutoDesktop() || viewModel.isRevertDesktop.value) userAgent else null) {
-        WebView(
-            modifier =
-                if (isImmersiveMode.value) wvModifier.padding(bottom = imeHeight)
-                else wvModifier.padding(
-                    top = barsInsets.calculateTopPadding(),
-                    bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
-                ),
-            state = state,
-            navigator = navigator,
-            platformWebViewParams = fileChooserWebViewParams(),
-            captureBackPresses = false,
-            onCreated = { webView ->
+    val showSettings = settingsToggle
+    androidx.compose.material3.Scaffold(
+        topBar = {
+            androidx.compose.material3.TopAppBar(
+                title = {
+                    androidx.compose.material3.Text(
+                        text = "Facebook",
+                        color = androidx.compose.ui.graphics.Color.White,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                        fontSize = androidx.compose.ui.unit.sp(22),
+                        modifier = androidx.compose.ui.Modifier.pointerInput(Unit) {
+                            androidx.compose.foundation.gestures.detectTapGestures(
+                                onLongPress = {
+                                    // 5 seconds = 5000ms
+                                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                                        kotlinx.coroutines.delay(5000)
+                                        showSettings.value = true
+                                    }
+                                },
+                                onPress = {
+                                    val pressStart = System.currentTimeMillis()
+                                    val released = tryAwaitRelease()
+                                    val pressDuration = System.currentTimeMillis() - pressStart
+                                    if (released && pressDuration >= 5000) {
+                                        showSettings.value = true
+                                    }
+                                }
+                            )
+                        }
+                    )
+                },
+                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                    containerColor = androidx.compose.ui.graphics.Color(0xFF1877F2)
+                )
+            )
+        }
+    ) { innerPadding ->
+        androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.padding(innerPadding)) {
+            if (showSettings.value) NobookSheet(viewModel, showSettings, onRestart)
+            // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
+            if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
 
-                val cookieManager = CookieManager.getInstance()
-                cookieManager.setAcceptCookie(true)
-                cookieManager.setAcceptThirdPartyCookies(webView, true)
-                cookieManager.flush()
+            if (isLoading.value) SplashLoading(state.loadingState)
 
-                state.webSettings.apply {
-                    customUserAgentString = userAgent
-                    isJavaScriptEnabled = true
+            key(if (isAutoDesktop() || viewModel.isRevertDesktop.value) userAgent else null) {
+                com.multiplatform.webview.web.WebView(
+                    modifier =
+                        if (isImmersiveMode.value) wvModifier.padding(bottom = imeHeight)
+                        else wvModifier.padding(
+                            top = barsInsets.calculateTopPadding(),
+                            bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
+                        ),
+                    state = state,
+                    navigator = navigator,
+                    platformWebViewParams = fileChooserWebViewParams(),
+                    captureBackPresses = false,
+                    onCreated = { webView ->
 
-                    androidWebSettings.apply {
-                        //isDebugInspectorInfoEnabled = true
-                        domStorageEnabled = true
-                        hideDefaultVideoPoster = true
-                        mediaPlaybackRequiresUserGesture = false
-                        textZoom = 96
+                        val cookieManager = android.webkit.CookieManager.getInstance()
+                        cookieManager.setAcceptCookie(true)
+                        cookieManager.setAcceptThirdPartyCookies(webView, true)
+                        cookieManager.flush()
+
+                        state.webSettings.apply {
+                            customUserAgentString = userAgent
+                            isJavaScriptEnabled = true
+
+                            androidWebSettings.apply {
+                                //isDebugInspectorInfoEnabled = true
+                                domStorageEnabled = true
+                                hideDefaultVideoPoster = true
+                                mediaPlaybackRequiresUserGesture = false
+                                textZoom = 96
+                            }
+                        }
+
+                        webView.apply {
+                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.NobookSettings(showSettings), "SettingsBridge")
+                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.ThemeChange(themeColor), "ThemeBridge")
+                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.DownloadBridge(context), "DownloadBridge")
+                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.NavigateFB(navTrigger), "NavigateBridge")
+
+                            setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+
+                            // Hide scrollbars
+                            overScrollMode = android.view.View.OVER_SCROLL_NEVER
+                            isVerticalScrollBarEnabled = false
+                            isHorizontalScrollBarEnabled = false
+
+                            settings.setSupportZoom(true)
+                            // pinch to zoom doesn't work on settings refresh otherwise
+                            settings.builtInZoomControls = true
+                            settings.displayZoomControls = false
+                        }
                     }
-                }
-
-                webView.apply {
-                    addJavascriptInterface(NobookSettings(settingsToggle), "SettingsBridge")
-                    addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
-                    addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
-                    addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")
-
-                    setLayerType(View.LAYER_TYPE_HARDWARE, null)
-
-                    // Hide scrollbars
-                    overScrollMode = View.OVER_SCROLL_NEVER
-                    isVerticalScrollBarEnabled = false
-                    isHorizontalScrollBarEnabled = false
-
-                    settings.setSupportZoom(true)
-                    // pinch to zoom doesn't work on settings refresh otherwise
-                    settings.builtInZoomControls = true
-                    settings.displayZoomControls = false
-                }
+                )
             }
-        )
+        }
     }
 }

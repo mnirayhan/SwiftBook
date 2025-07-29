@@ -102,11 +102,31 @@ fun FacebookLiteScreen(onBackToNormal: () -> Unit) {
                 // Sticky TopAppBar with Back to Normal button and menu
                 TopAppBar(
                     title = {
+                        // Facebook logo with long-press for settings
                         Text(
                             text = "Facebook Lite",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp
+                            fontSize = 22.sp,
+                            modifier = Modifier.pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = {
+                                        // 5 seconds = 5000ms
+                                        coroutineScope.launch {
+                                            kotlinx.coroutines.delay(5000)
+                                            showSettings = true
+                                        }
+                                    },
+                                    onPress = {
+                                        val pressStart = System.currentTimeMillis()
+                                        val released = tryAwaitRelease()
+                                        val pressDuration = System.currentTimeMillis() - pressStart
+                                        if (released && pressDuration >= 5000) {
+                                            showSettings = true
+                                        }
+                                    }
+                                )
+                            }
                         )
                     },
                     navigationIcon = {
@@ -115,9 +135,7 @@ fun FacebookLiteScreen(onBackToNormal: () -> Unit) {
                         }
                     },
                     actions = {
-                        IconButton(onClick = { showSettings = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
-                        }
+                        // Removed settings gear icon
                         TextButton(onClick = onBackToNormal) {
                             Text("Back to Normal", color = Color.White)
                         }
