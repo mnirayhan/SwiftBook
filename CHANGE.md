@@ -1,6 +1,6 @@
 ## MetaPipe - v1.1.0
 
-**Feature Release: Enhanced Facebook Support**
+**First Release: Enhanced Facebook Support**
 
 This release introduces significant improvements to MetaPipe’s Facebook browsing experience, with enhanced ad-blocking capabilities and refined UI optimizations.
 

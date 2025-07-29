@@ -30,33 +30,40 @@ fun MainNavigation(data: Uri?) {
     val viewModel: NobookViewModel = viewModel()
     val shouldRestart = remember { mutableStateOf(false) }
     val themeColor = viewModel.themeColor.value
+    val facebookLiteMode = viewModel.facebookLiteMode.collectAsState().value
 
     var screen by rememberSaveable { mutableStateOf("facebook") }
 
     NobookTheme(
         darkTheme = ColorUtils.calculateLuminance(themeColor.toArgb()) < 0.5
     ) {
-        key(shouldRestart.value) {
-            Navigation(screen, Modifier.fillMaxSize()) { currentScreen ->
-                if (currentScreen == "facebook") {
-                    FacebookWebView(
-                        data?.toString() ?: "https://facebook.com/",
-                        viewModel = viewModel,
-                        onRestart = {
-                            shouldRestart.value = !shouldRestart.value
-                            viewModel.scripts.value = ""
-                        },
-                        onOpenMessenger = {
-                            Toast.makeText(context, "Opening messages...", Toast.LENGTH_SHORT)
-                                .show()
-                            screen = "messages"
-                        }
-                    )
-                } else {
-                    MessengerWebView(
-                        viewModel = viewModel,
-                        onNavigateFB = { screen = "facebook" }
-                    )
+        key(shouldRestart.value, facebookLiteMode) {
+            if (facebookLiteMode) {
+                com.ycngmn.nobook.ui.screens.FacebookLiteScreen(
+                    onBackToNormal = { viewModel.setFacebookLiteMode(false) }
+                )
+            } else {
+                Navigation(screen, Modifier.fillMaxSize()) { currentScreen ->
+                    if (currentScreen == "facebook") {
+                        FacebookWebView(
+                            data?.toString() ?: "https://facebook.com/",
+                            viewModel = viewModel,
+                            onRestart = {
+                                shouldRestart.value = !shouldRestart.value
+                                viewModel.scripts.value = ""
+                            },
+                            onOpenMessenger = {
+                                Toast.makeText(context, "Opening messages...", Toast.LENGTH_SHORT)
+                                    .show()
+                                screen = "messages"
+                            }
+                        )
+                    } else {
+                        MessengerWebView(
+                            viewModel = viewModel,
+                            onNavigateFB = { screen = "facebook" }
+                        )
+                    }
                 }
             }
         }
