@@ -21,7 +21,7 @@
                 "Sponsoroitu", "Sponsrat", "Được tài trợ", "Χορηγούμενη",
                 "Спонсорирано", "Спонзорирано", "Ивээн тэтгэсэн", "Реклама",
                 "Спонзорисано", "במימון", "سپانسرڈ", "دارای پشتیبانی مالی",
-                "ስፖንሰር የተደረገ", "प्रायोजित", "ተደረገ", "प", "স্পনসর্ড",
+                "ስፖንሰር የተደረገ", "प्रायोजित", "ተደረገ", "প", "স্পনসর্ড",
                 "ਪ੍ਰਯੋਜਿਤ", "પ્રાયોજિત", "ପ୍ରାୟୋଜିତ", "செய்யப்பட்ட செய்யப்பட்ட",
                 "చేయబడినది చేయబడినది", "ಪ್ರಾಯೋಜಿಸಲಾಗಿದೆ", "ചെയ്‌തത് ചെയ്‌തത്",
                 "ලද ලද ලද", "สนับสนุน สนับสนุน รับ สนับสนุน สนับสนุน",
@@ -69,9 +69,15 @@
                             found = true;
                         } else {
                             // Check for specific spans/divs with sponsored text
-                            const spans = element.querySelectorAll('span, div, a');
+                            const spans = element.querySelectorAll('span, div, a, [aria-label], [data-testid]');
                             for (const span of spans) {
                                 if (sponsoredRegex.test(span.textContent || '')) {
+                                    found = true;
+                                    break;
+                                }
+                                // Fallback: aria-label or data-testid containing 'sponsor'
+                                if ((span.getAttribute('aria-label')||'').toLowerCase().includes('sponsor') ||
+                                    (span.getAttribute('data-testid')||'').toLowerCase().includes('sponsor')) {
                                     found = true;
                                     break;
                                 }
@@ -139,7 +145,7 @@
         return;
     }
 
-
+    // Mobile/Lite fallback (unchanged)
     const sponsoredTexts = [
         "Sponsored", "Gesponsert", "Sponsorlu", "Sponsorowane",
         "Ispoonsara godhameera", "Geborg", "Bersponsor", "Ditaja",
@@ -151,8 +157,8 @@
         "Sponsoroitu", "Sponsrat", "Được tài trợ", "Χορηγούμενη",
         "Спонсорирано", "Спонзорирано", "Ивээн тэтгэсэн", "Реклама",
         "Спонзорисано", "במימון", "سپانسرڈ", "دارای پشتیبانی مالی",
-        "ስፖንሰር የተደረገ", "प्रायोजित", "ተደረገ", "प", "স্পনসর্ড",
-        "ਪ੍ਰਯੋਜਿਤ", "પ્રાયોજિત", "ପ୍ରାୟୋଜିତ", "செய்யப்பட்ட செய்யப்பட்ட",
+        "ስፖንሰር የተደረገ", "प्रायोजित", "ተደረገ", "প", "স্পনসর্ড",
+        "ਪ੍ਰਯੋਜਿਤ", "પ્રાયોજિત", "ପ୍ରାୟୋଜିତ", "செய்யப்பட்ட செய���யப்பட்ட",
         "చేయబడినది చేయబడినది", "ಪ್ರಾಯೋಜಿಸಲಾಗಿದೆ", "ചെയ്‌തത് ചെയ്‌തത്",
         "ලද ලද ලද", "สนับสนุน สนับสนุน รับ สนับสนุน สนับสนุน",
         "ကြော်ငြာ ကြော်ငြာ", "ឧបត្ថម្ភ ឧបត្ថម្ភ ឧបត្ថម្ភ", "광고",

@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -86,7 +87,77 @@ fun SheetContent(
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = stringResource(R.string.customize_feed_dialog_content))
+                            // Feed customization options as SheetItems
+                            SheetItem(
+                                icon = R.drawable.hide_suggested_24px,
+                                title = stringResource(R.string.hide_suggested_title),
+                                isActive = viewModel.hideSuggested.collectAsState().value
+                            ) {
+                                viewModel.setHideSuggested(!viewModel.hideSuggested.value)
+                            }
+                            SheetItem(
+                                icon = R.drawable.hide_reels_24px,
+                                title = stringResource(R.string.hide_reels_title),
+                                isActive = viewModel.hideReels.collectAsState().value
+                            ) {
+                                viewModel.setHideReels(!viewModel.hideReels.value)
+                            }
+                            SheetItem(
+                                icon = R.drawable.hide_stories_24px,
+                                title = stringResource(R.string.hide_stories_title),
+                                isActive = viewModel.hideStories.collectAsState().value
+                            ) {
+                                viewModel.setHideStories(!viewModel.hideStories.value)
+                            }
+                            SheetItem(
+                                icon = R.drawable.hide_people_24px,
+                                title = stringResource(R.string.hide_people_you_may_know_title),
+                                isActive = viewModel.hidePeopleYouMayKnow.collectAsState().value
+                            ) {
+                                viewModel.setHidePeopleYouMayKnow(!viewModel.hidePeopleYouMayKnow.value)
+                            }
+                            SheetItem(
+                                icon = R.drawable.hide_groups_24px,
+                                title = stringResource(R.string.hide_groups_title),
+                                isActive = viewModel.hideGroups.collectAsState().value
+                            ) {
+                                viewModel.setHideGroups(!viewModel.hideGroups.value)
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            // Mute keywords UI inside dialog
+                            Text(
+                                text = stringResource(R.string.mute_keywords_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+                            )
+                            Text(
+                                text = stringResource(R.string.mute_keywords_summary),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
+                            )
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                OutlinedTextField(
+                                    value = keywordInput,
+                                    onValueChange = { keywordInput = it },
+                                    label = { Text(stringResource(R.string.mute_keywords_hint)) },
+                                    placeholder = { Text(stringResource(R.string.mute_keywords_value_example)) },
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(onClick = { viewModel.setMuteKeywords(keywordInput) }) {
+                                    Text(stringResource(R.string.mute_keywords_save))
+                                }
+                            }
+                            if (muteKeywords.value.isNotBlank()) {
+                                Text(
+                                    text = "Muted: ${muteKeywords.value}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                                )
+                            }
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(
                                 onClick = { showCustomizeFeedDialog = false },
@@ -99,39 +170,7 @@ fun SheetContent(
                 }
             }
 
-            Text(
-                text = stringResource(R.string.mute_keywords_title),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
-            )
-            Text(
-                text = stringResource(R.string.mute_keywords_summary),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
-            )
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = keywordInput,
-                    onValueChange = { keywordInput = it },
-                    label = { Text(stringResource(R.string.mute_keywords_hint)) },
-                    placeholder = { Text(stringResource(R.string.mute_keywords_value_example)) },
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { viewModel.setMuteKeywords(keywordInput) }) {
-                    Text(stringResource(R.string.mute_keywords_save))
-                }
-            }
-            if (muteKeywords.value.isNotBlank()) {
-                Text(
-                    text = "Muted: ${muteKeywords.value}",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                )
-            }
+            // (Mute keywords UI moved inside the dialog above)
         }
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -206,9 +245,11 @@ fun SheetContent(
             SheetItem(
                 icon = R.drawable.computer_24px,
                 title = stringResource(R.string.facebook_lite_mode_title),
-                isActive = false
+                isActive = viewModel.facebookLiteMode.collectAsState().value
             ) {
-                onOpenFacebookLite()
+                val newValue = !viewModel.facebookLiteMode.value
+                viewModel.setFacebookLiteMode(newValue)
+                if (newValue) onOpenFacebookLite()
             }
 
             // Check for Updates (icon, not toggle)

@@ -12,7 +12,8 @@
 <string name="hide_stories_title">Hide stories</string>
 <string name="hide_people_you_may_know_title">Hide people you may know</string>
 <string name="hide_groups_title">Hide group suggestions</string>
-<string name="customize_feed_dialog_content">Customize your feed by hiding posts, muting keywords, and more.</string>
+
+
 <!-- Sheet Items -->
 <string name="remove_ads_title">Remove ads</string>
 <string name="download_content_title">Download contents</string>

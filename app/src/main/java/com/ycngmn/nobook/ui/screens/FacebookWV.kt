@@ -7,13 +7,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.ycngmn.nobook.R
 import com.ycngmn.nobook.ui.NobookViewModel
+import com.ycngmn.nobook.utils.DESKTOP_USER_AGENT
 import com.ycngmn.nobook.utils.Script
 import com.ycngmn.nobook.utils.fetchScripts
 import com.ycngmn.nobook.utils.isAutoDesktop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 @Composable
 fun FacebookWebView(
@@ -73,4 +73,3 @@ fun FacebookWebView(
         }
     )
 }
-
