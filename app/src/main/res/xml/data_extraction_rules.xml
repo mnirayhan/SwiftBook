@@ -3,8 +3,12 @@
     <cloud-backup>
         <!-- Include user preferences and settings -->
         <include domain="sharedpref" path="." />
+        <!-- Include all files and databases, then exclude sensitive ones -->
+        <include domain="database" path="." />
+        <include domain="file" path="." />
         <!-- Exclude sensitive data like cookies and cache -->
-        <exclude domain="database" path="." />
+        <exclude domain="database" path="webview.db" />
+        <exclude domain="database" path="webview_data.db" />
         <exclude domain="file" path="cache/" />
         <exclude domain="file" path="code_cache/" />
         <exclude domain="file" path="no_backup/" />
@@ -12,6 +16,8 @@
     <device-transfer>
         <!-- Include user preferences for device transfer -->
         <include domain="sharedpref" path="." />
+        <!-- Include all files, then exclude temporary ones -->
+        <include domain="file" path="." />
         <!-- Exclude temporary files and cache -->
         <exclude domain="file" path="cache/" />
         <exclude domain="file" path="code_cache/" />
