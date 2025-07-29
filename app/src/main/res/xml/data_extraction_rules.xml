@@ -1,26 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- Include user preferences and settings -->
-        <include domain="sharedpref" path="." />
-        <!-- Include all files and databases, then exclude sensitive ones -->
-        <include domain="database" path="." />
-        <include domain="file" path="." />
-        <!-- Exclude sensitive data like cookies and cache -->
-        <exclude domain="database" path="webview.db" />
-        <exclude domain="database" path="webview_data.db" />
-        <exclude domain="file" path="cache/" />
-        <exclude domain="file" path="code_cache/" />
-        <exclude domain="file" path="no_backup/" />
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
     </cloud-backup>
+    <!--
     <device-transfer>
-        <!-- Include user preferences for device transfer -->
-        <include domain="sharedpref" path="." />
-        <!-- Include all files, then exclude temporary ones -->
-        <include domain="file" path="." />
-        <!-- Exclude temporary files and cache -->
-        <exclude domain="file" path="cache/" />
-        <exclude domain="file" path="code_cache/" />
-        <exclude domain="file" path="no_backup/" />
+        <include .../>
+        <exclude .../>
     </device-transfer>
+    -->
 </data-extraction-rules>
