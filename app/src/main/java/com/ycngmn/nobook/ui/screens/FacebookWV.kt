@@ -7,14 +7,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.ycngmn.nobook.R
 import com.ycngmn.nobook.ui.NobookViewModel
+import com.ycngmn.nobook.utils.DESKTOP_USER_AGENT
 import com.ycngmn.nobook.utils.Script
 import com.ycngmn.nobook.utils.fetchScripts
 import com.ycngmn.nobook.utils.isAutoDesktop
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-const val DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"
 
 @Composable
 fun FacebookWebView(
