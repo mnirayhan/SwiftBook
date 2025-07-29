@@ -5,20 +5,32 @@ import android.webkit.CookieManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -37,9 +49,11 @@ import com.ycngmn.nobook.utils.jsBridge.NavigateFB
 import com.ycngmn.nobook.utils.jsBridge.NobookSettings
 import com.ycngmn.nobook.utils.jsBridge.ThemeChange
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import rememberImeHeight
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseWebView(
     url: String,
@@ -51,6 +65,7 @@ fun BaseWebView(
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val scope = rememberCoroutineScope()
 
     val state =
         rememberWebViewState(url, additionalHttpHeaders = mapOf("X-Requested-With" to ""))
@@ -137,21 +152,21 @@ fun BaseWebView(
 
     // we limit the recomposition to specific cases with the condition.
     val showSettings = settingsToggle
-    androidx.compose.material3.Scaffold(
+    Scaffold(
         topBar = {
-            androidx.compose.material3.TopAppBar(
+            TopAppBar(
                 title = {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "Facebook",
-                        color = androidx.compose.ui.graphics.Color.White,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                        fontSize = androidx.compose.ui.unit.sp(22),
-                        modifier = androidx.compose.ui.Modifier.pointerInput(Unit) {
-                            androidx.compose.foundation.gestures.detectTapGestures(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        modifier = Modifier.pointerInput(Unit) {
+                            detectTapGestures(
                                 onLongPress = {
                                     // 5 seconds = 5000ms
-                                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                                        kotlinx.coroutines.delay(5000)
+                                    scope.launch {
+                                        delay(5000)
                                         showSettings.value = true
                                     }
                                 },
@@ -167,13 +182,13 @@ fun BaseWebView(
                         }
                     )
                 },
-                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
-                    containerColor = androidx.compose.ui.graphics.Color(0xFF1877F2)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF1877F2)
                 )
             )
         }
     ) { innerPadding ->
-        androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.padding(innerPadding)) {
+        Box(Modifier.padding(innerPadding)) {
             if (showSettings.value) NobookSheet(viewModel, showSettings, onRestart)
             // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
             if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
@@ -181,7 +196,7 @@ fun BaseWebView(
             if (isLoading.value) SplashLoading(state.loadingState)
 
             key(if (isAutoDesktop() || viewModel.isRevertDesktop.value) userAgent else null) {
-                com.multiplatform.webview.web.WebView(
+                WebView(
                     modifier =
                         if (isImmersiveMode.value) wvModifier.padding(bottom = imeHeight)
                         else wvModifier.padding(
@@ -194,7 +209,7 @@ fun BaseWebView(
                     captureBackPresses = false,
                     onCreated = { webView ->
 
-                        val cookieManager = android.webkit.CookieManager.getInstance()
+                        val cookieManager = CookieManager.getInstance()
                         cookieManager.setAcceptCookie(true)
                         cookieManager.setAcceptThirdPartyCookies(webView, true)
                         cookieManager.flush()
@@ -213,15 +228,15 @@ fun BaseWebView(
                         }
 
                         webView.apply {
-                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.NobookSettings(showSettings), "SettingsBridge")
-                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.ThemeChange(themeColor), "ThemeBridge")
-                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.DownloadBridge(context), "DownloadBridge")
-                            addJavascriptInterface(com.ycngmn.nobook.utils.jsBridge.NavigateFB(navTrigger), "NavigateBridge")
+                            addJavascriptInterface(NobookSettings(showSettings), "SettingsBridge")
+                            addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
+                            addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
+                            addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")
 
-                            setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+                            setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
                             // Hide scrollbars
-                            overScrollMode = android.view.View.OVER_SCROLL_NEVER
+                            overScrollMode = View.OVER_SCROLL_NEVER
                             isVerticalScrollBarEnabled = false
                             isHorizontalScrollBarEnabled = false
 
