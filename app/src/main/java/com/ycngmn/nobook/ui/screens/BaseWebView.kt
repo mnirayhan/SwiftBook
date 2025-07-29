@@ -5,18 +5,14 @@ import android.webkit.CookieManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -72,6 +68,8 @@ fun BaseWebView(
     val navigator = rememberWebViewNavigator(requestInterceptor =
         ExternalRequestInterceptor(context = context, onInterceptAction))
 
+
+
     // allow exiting while scrolling to top.
     val exit = remember { mutableStateOf(false) }
     LaunchedEffect(exit.value) {
@@ -95,6 +93,7 @@ fun BaseWebView(
             else exit.value = true
         }
     }
+
 
     // Navigate to Nobook on fb logo pressed from messenger.
     val navTrigger = remember { mutableStateOf(false) }
@@ -143,6 +142,12 @@ fun BaseWebView(
         return
     }
 
+    if (settingsToggle.value) NobookSheet(viewModel, settingsToggle, onRestart)
+    // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
+    if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
+
+    if (isLoading.value) SplashLoading(state.loadingState)
+
     val wvModifier = Modifier
         .fillMaxSize()
         .background(themeColor.value)
@@ -151,103 +156,57 @@ fun BaseWebView(
     val imeHeight = rememberImeHeight()
 
     // we limit the recomposition to specific cases with the condition.
-    val showSettings = settingsToggle
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Facebook",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        modifier = Modifier.pointerInput(Unit) {
-                            detectTapGestures(
-                                onLongPress = {
-                                    // 5 seconds = 5000ms
-                                    scope.launch {
-                                        delay(5000)
-                                        showSettings.value = true
-                                    }
-                                },
-                                onPress = {
-                                    val pressStart = System.currentTimeMillis()
-                                    val released = tryAwaitRelease()
-                                    val pressDuration = System.currentTimeMillis() - pressStart
-                                    if (released && pressDuration >= 5000) {
-                                        showSettings.value = true
-                                    }
-                                }
-                            )
-                        }
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1877F2)
-                )
-            )
-        }
-    ) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            if (showSettings.value) NobookSheet(viewModel, showSettings, onRestart)
-            // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
-            if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
+    key(if (isAutoDesktop() || viewModel.isRevertDesktop.value) userAgent else null) {
+        WebView(
+            modifier =
+                if (isImmersiveMode.value) wvModifier.padding(bottom = imeHeight)
+                else wvModifier.padding(
+                    top = barsInsets.calculateTopPadding(),
+                    bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
+                ),
+            state = state,
+            navigator = navigator,
+            platformWebViewParams = fileChooserWebViewParams(),
+            captureBackPresses = false,
+            onCreated = { webView ->
 
-            if (isLoading.value) SplashLoading(state.loadingState)
+                val cookieManager = CookieManager.getInstance()
+                cookieManager.setAcceptCookie(true)
+                cookieManager.setAcceptThirdPartyCookies(webView, true)
+                cookieManager.flush()
 
-            key(if (isAutoDesktop() || viewModel.isRevertDesktop.value) userAgent else null) {
-                WebView(
-                    modifier =
-                        if (isImmersiveMode.value) wvModifier.padding(bottom = imeHeight)
-                        else wvModifier.padding(
-                            top = barsInsets.calculateTopPadding(),
-                            bottom = maxOf(barsInsets.calculateBottomPadding(), imeHeight)
-                        ),
-                    state = state,
-                    navigator = navigator,
-                    platformWebViewParams = fileChooserWebViewParams(),
-                    captureBackPresses = false,
-                    onCreated = { webView ->
+                state.webSettings.apply {
+                    customUserAgentString = userAgent
+                    isJavaScriptEnabled = true
 
-                        val cookieManager = CookieManager.getInstance()
-                        cookieManager.setAcceptCookie(true)
-                        cookieManager.setAcceptThirdPartyCookies(webView, true)
-                        cookieManager.flush()
-
-                        state.webSettings.apply {
-                            customUserAgentString = userAgent
-                            isJavaScriptEnabled = true
-
-                            androidWebSettings.apply {
-                                //isDebugInspectorInfoEnabled = true
-                                domStorageEnabled = true
-                                hideDefaultVideoPoster = true
-                                mediaPlaybackRequiresUserGesture = false
-                                textZoom = 96
-                            }
-                        }
-
-                        webView.apply {
-                            addJavascriptInterface(NobookSettings(showSettings), "SettingsBridge")
-                            addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
-                            addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
-                            addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")
-
-                            setLayerType(View.LAYER_TYPE_HARDWARE, null)
-
-                            // Hide scrollbars
-                            overScrollMode = View.OVER_SCROLL_NEVER
-                            isVerticalScrollBarEnabled = false
-                            isHorizontalScrollBarEnabled = false
-
-                            settings.setSupportZoom(true)
-                            // pinch to zoom doesn't work on settings refresh otherwise
-                            settings.builtInZoomControls = true
-                            settings.displayZoomControls = false
-                        }
+                    androidWebSettings.apply {
+                        //isDebugInspectorInfoEnabled = true
+                        domStorageEnabled = true
+                        hideDefaultVideoPoster = true
+                        mediaPlaybackRequiresUserGesture = false
+                        textZoom = 96
                     }
-                )
+                }
+
+                webView.apply {
+                    addJavascriptInterface(NobookSettings(settingsToggle), "SettingsBridge")
+                    addJavascriptInterface(ThemeChange(themeColor), "ThemeBridge")
+                    addJavascriptInterface(DownloadBridge(context), "DownloadBridge")
+                    addJavascriptInterface(NavigateFB(navTrigger), "NavigateBridge")
+
+                    setLayerType(View.LAYER_TYPE_HARDWARE, null)
+
+                    // Hide scrollbars
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    isVerticalScrollBarEnabled = false
+                    isHorizontalScrollBarEnabled = false
+
+                    settings.setSupportZoom(true)
+                    // pinch to zoom doesn't work on settings refresh otherwise
+                    settings.builtInZoomControls = true
+                    settings.displayZoomControls = false
+                }
             }
-        }
+        )
     }
 }
