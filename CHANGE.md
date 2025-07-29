@@ -2,11 +2,11 @@
 
 **Facebook Experience & UI Overhaul**
 
-This release brings major improvements to MetaPipe’s Facebook integration, ad-blocking, customization, and user interface.
+This release brings major improvements to MetaPipe's Facebook integration, ad-blocking, customization, and user interface.
 
 ### 🚀 Key Enhancements
 
-- Redesigned ad-block script for Facebook’s **desktop layout** with improved sponsored post detection and selector coverage.
+- Redesigned ad-block script for Facebook's **desktop layout** with improved sponsored post detection and selector coverage.
 - "Hide Groups" feature now hides group posts in the main feed, not just suggestions.
 - **Feed Customization Dialog** now includes toggles for:
   - Hide suggested posts
