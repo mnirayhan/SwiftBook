@@ -28,6 +28,7 @@ class NobookDataStore(private val context: Context) {
         val FACEBOOK_LITE_MODE = booleanPreferencesKey("facebook_lite_mode")
         val MUTE_KEYWORDS = stringPreferencesKey("mute_keywords")
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
+        val HD_MODE = booleanPreferencesKey("hd_mode")
     }
 
     val revertDesktop = context.dataStore.data.map { it[isRevertDesktop] == true }
@@ -103,5 +104,15 @@ class NobookDataStore(private val context: Context) {
     val muteKeywords = context.dataStore.data.map { it[MUTE_KEYWORDS] ?: "" }
     suspend fun setMuteKeywords(muteKeywords: String) {
         context.dataStore.edit { it[MUTE_KEYWORDS] = muteKeywords }
+    }
+
+    val revertDesktop = context.dataStore.data.map { it[isRevertDesktop] == true }
+    suspend fun setRevertDesktop(revertDesktop: Boolean) {
+        context.dataStore.edit { it[isRevertDesktop] = revertDesktop }
+    }
+    
+    val hdMode = context.dataStore.data.map { it[HD_MODE] == true }
+    suspend fun setHdMode(hdMode: Boolean) {
+        context.dataStore.edit { it[HD_MODE] = hdMode }
     }
 }

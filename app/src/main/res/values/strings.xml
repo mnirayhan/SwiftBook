@@ -25,6 +25,7 @@
 <string name="amoled_black_title">AMOLED Black</string>
 <string name="customize_feed_title">Customize feed</string>
 <string name="follow_at_github">Follow us on Github</string>
+<string name="hd_mode_title">HD Mode</string>
 
 <string name="feed_customization_group">Feed Customization</string>
 <string name="appearance_group">Appearance</string>

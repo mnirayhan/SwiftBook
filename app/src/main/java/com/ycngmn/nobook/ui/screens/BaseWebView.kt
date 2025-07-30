@@ -82,7 +82,7 @@ fun BaseWebView(
     BackHandler {
         if (exit.value) activity?.finish()
         else navigator.evaluateJavaScript("backHandlerNB();") {
-            val backHandled = it.removeSurrounding("\"")
+            val backHandled = it.removeSurrounding(""")
             if (backHandled == "false") {
                 if (navigator.canGoBack) navigator.navigateBack()
                 else if (state.lastLoadedUrl?.contains(".facebook.com/messages/") == true)
@@ -105,6 +105,7 @@ fun BaseWebView(
     val settingsToggle = remember { mutableStateOf(false) }
     val themeColor = viewModel.themeColor
     val isImmersiveMode = viewModel.immersiveMode.collectAsState()
+    val isHDMode = viewModel.hdMode.collectAsState()
 
     LaunchedEffect(isImmersiveMode.value, themeColor.value) {
         val window = activity?.window
@@ -128,9 +129,36 @@ fun BaseWebView(
     if (userScripts.value.isEmpty()) {
         LaunchedEffect(Unit) { onPostLoad() } }
 
-    LaunchedEffect(state.loadingState, userScripts.value) {
+    LaunchedEffect(state.loadingState, userScripts.value, isHDMode.value) {
         if (state.loadingState is LoadingState.Finished && userScripts.value.isNotEmpty()){
-            navigator.evaluateJavaScript(userScripts.value) {
+            val hdModeScript = if (isHDMode.value) {
+                """
+                (function() {
+                  const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                      mutation.addedNodes.forEach(node => {
+                        if (node.tagName === 'IMG' || node.tagName === 'VIDEO') {
+                          // Check for common attributes indicating lower quality and replace with higher quality ones
+                          // This is a heuristic and might need adjustments based on Facebook's DOM structure
+                          if (node.hasAttribute('data-src') || node.hasAttribute('src')) {
+                             let src = node.getAttribute('data-src') || node.getAttribute('src');
+                             // Simple replacement, might need more sophisticated logic
+                             src = src.replace(/_[sd]+\.jpg/i, '_n.jpg'); // Example for images
+                             src = src.replace(/_[sd]+\.mp4/i, '_n.mp4'); // Example for videos
+                             node.setAttribute('src', src);
+                             node.removeAttribute('data-src');
+                          }
+                        }
+                      });
+                    });
+                  });
+
+                  observer.observe(document.body, { childList: true, subtree: true });
+                })();
+                """
+            } else ""
+
+            navigator.evaluateJavaScript(userScripts.value + hdModeScript) {
                 if (isLoading.value) isLoading.value = false
             }
         }

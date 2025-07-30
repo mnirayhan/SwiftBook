@@ -47,6 +47,7 @@ fun SheetContent(
     val amoledBlack = viewModel.amoledBlack.collectAsState()
     val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
     val muteKeywords = viewModel.muteKeywords.collectAsState()
+    val hdMode = viewModel.hdMode.collectAsState()
     var keywordInput by remember { mutableStateOf(muteKeywords.value) }
     val isAutoDesktop = isAutoDesktop()
     val scope = rememberCoroutineScope()
@@ -114,7 +115,7 @@ fun SheetContent(
                                 title = stringResource(R.string.hide_people_you_may_know_title),
                                 isActive = viewModel.hidePeopleYouMayKnow.collectAsState().value
                             ) {
-                                viewModel.setHidePeopleYouMayKnow(!viewModel.hidePeopleYouMayKnow.value)
+                                viewModel.setHidePeopleYouMayKnow(!viewModel.hidePeopleYouKnow.value)
                             }
                             SheetItem(
                                 icon = R.drawable.hide_groups_24px,
@@ -251,6 +252,13 @@ fun SheetContent(
                 viewModel.setFacebookLiteMode(newValue)
                 if (newValue) onOpenFacebookLite()
             }
+            SheetItem(
+                icon = R.drawable.customize_feed_24px, // Use an appropriate icon, using customize_feed for now
+                title = stringResource(R.string.hd_mode_title),
+                isActive = hdMode.value
+            ) {
+                viewModel.setHdMode(!hdMode.value)
+            }
 
             // Check for Updates (icon, not toggle)
             SheetItem(
@@ -361,12 +369,11 @@ fun SheetContent(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(5.dp)
-                        .clickable { onClose() }
-                )
+                        .clickable { onClose() })
+                }
             }
         }
     }
-}
 
 
 
