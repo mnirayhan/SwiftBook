@@ -1,7 +1,7 @@
 # SwiftBook
 
 <p align="center">
-  <img src="images/swiftbook-cover-dark.png" height="800" alt="SwiftBook Cover Image">
+  <img src="images/swiftbook-cover-light.png" height="800" alt="SwiftBook Cover Image">
 </p>
 
 <div align="center">
