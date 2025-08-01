@@ -2,7 +2,7 @@
     // Utility: log with prefix
     function log(...args) {
         if (typeof console !== 'undefined') {
-            console.log('[MetaPipe Adblock]', ...args);
+            console.log('[SwiftBook Adblock]', ...args);
         }
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MetaPipe</string>
+    <string name="app_name">SwiftBook</string>
 
     <!-- Bottom Text and Buttons -->
     <string name="apply_immediately">Aplicar Imediatamente?</string>

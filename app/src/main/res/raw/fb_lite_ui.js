@@ -1,10 +1,10 @@
-// [MetaPipe FB Lite UI]
+// [SwiftBook FB Lite UI]
 // TODO: For best performance and maintainability, migrate this UI logic to Kotlin Compose (see FacebookWV.kt for reference).
 // This JS patch improves sticky navbar and smooth scrolling for the Facebook Lite UI.
 (function() {
     function log(...args) {
         if (typeof console !== 'undefined') {
-            console.log('[MetaPipe FB Lite UI]', ...args);
+            console.log('[SwiftBook FB Lite UI]', ...args);
         }
     }
 

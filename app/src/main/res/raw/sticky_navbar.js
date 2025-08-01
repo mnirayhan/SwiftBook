@@ -1,9 +1,9 @@
-// [MetaPipe Sticky Navbar Fix]
+// [SwiftBook Sticky Navbar Fix]
 // Improved: recalculates offsets and applies styles on DOM changes and window resize for robust sticky navbar/tabbar.
 (function() {
     function log(...args) {
         if (typeof console !== 'undefined') {
-            console.log('[MetaPipe StickyNavbar]', ...args);
+            console.log('[SwiftBook StickyNavbar]', ...args);
         }
     }
 

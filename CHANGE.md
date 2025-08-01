@@ -1,4 +1,4 @@
-## MetaPipe - v1.3.0
+## SwiftBook - v1.4.0
 
 **HD Mode Integration & Performance Optimizations**
 

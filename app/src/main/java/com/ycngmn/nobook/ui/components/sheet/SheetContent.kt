@@ -270,7 +270,7 @@ fun SheetContent(
                 scope.launch(Dispatchers.IO) {
                     updateResult = context.getString(R.string.update_checking)
                     try {
-                        val url = URL("https://api.github.com/repos/mnirayhan/metapipe/releases/latest")
+                        val url = URL("https://api.github.com/repos/mnirayhan/swiftbook/releases/latest")
                         val json = JSONObject(url.readText())
                         val latestTag = json.getString("tag_name")
                         if (latestTag.removePrefix("v") > versionName) {
@@ -301,7 +301,7 @@ fun SheetContent(
                 tailIcon = R.drawable.arrow_outward_24px,
                 isActive = false
             ) {
-                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/mnirayhan/metapipe"))
+                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/mnirayhan/swiftbook"))
                 context.startActivity(intent)
             }
 

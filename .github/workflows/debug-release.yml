@@ -1,4 +1,4 @@
-name: Debug MetaPipe Build
+name: Debug SwiftBook Build
 
 on:
   push:
@@ -44,7 +44,7 @@ jobs:
       - name: Rename Debug APK
         run: |
           VERSION_NAME=$(grep 'versionName = ' app/build.gradle.kts | head -1 | cut -d '"' -f2)
-          NEW_NAME="MetaPipe ${VERSION_NAME} debug.apk"
+          NEW_NAME="SwiftBook ${VERSION_NAME} debug.apk"
           mv app/build/outputs/apk/debug/app-debug.apk "$NEW_NAME"
           echo "APK renamed to $NEW_NAME"
 
@@ -52,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk-artifact
-          path: MetaPipe*debug.apk
+          path: SwiftBook*debug.apk
           compression-level: 5

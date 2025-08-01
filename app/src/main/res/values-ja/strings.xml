@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MetaPipe</string>
+    <string name="app_name">SwiftBook</string>
 
     <string name="apply_immediately">すぐに適用しますか？</string>
     <string name="close_menu">メニューを閉じる</string>

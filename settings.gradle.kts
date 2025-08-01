@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MetaPipe"
+rootProject.name = "SwiftBook"
 include(":app")
