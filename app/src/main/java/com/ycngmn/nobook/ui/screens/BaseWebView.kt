@@ -10,15 +10,23 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -37,9 +45,11 @@ import com.ycngmn.nobook.utils.jsBridge.NavigateFB
 import com.ycngmn.nobook.utils.jsBridge.NobookSettings
 import com.ycngmn.nobook.utils.jsBridge.ThemeChange
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import rememberImeHeight
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseWebView(
     url: String,
@@ -51,6 +61,7 @@ fun BaseWebView(
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val scope = rememberCoroutineScope()
 
     val state =
         rememberWebViewState(url, additionalHttpHeaders = mapOf("X-Requested-With" to ""))
@@ -63,15 +74,15 @@ fun BaseWebView(
     val exit = remember { mutableStateOf(false) }
     LaunchedEffect(exit.value) {
         if (exit.value) {
-            delay(800)
+            delay(600)
             exit.value = false
         }
     }
 
     BackHandler {
         if (exit.value) activity?.finish()
-        else navigator.evaluateJavaScript("backHandlerNB();") {
-            val backHandled = it.removeSurrounding("\"")
+        else navigator.evaluateJavaScript("backHandlerNB();") { result ->
+            val backHandled = result.removeSurrounding("\"")
             if (backHandled == "false") {
                 if (navigator.canGoBack) navigator.navigateBack()
                 else if (state.lastLoadedUrl?.contains(".facebook.com/messages/") == true)
@@ -94,6 +105,7 @@ fun BaseWebView(
     val settingsToggle = remember { mutableStateOf(false) }
     val themeColor = viewModel.themeColor
     val isImmersiveMode = viewModel.immersiveMode.collectAsState()
+    val isHDMode = viewModel.hdMode.collectAsState()
 
     LaunchedEffect(isImmersiveMode.value, themeColor.value) {
         val window = activity?.window
@@ -115,11 +127,39 @@ fun BaseWebView(
 
     val userScripts = viewModel.scripts
     if (userScripts.value.isEmpty()) {
-        LaunchedEffect(Unit) { onPostLoad() } }
+        LaunchedEffect(Unit) { onPostLoad() }
+    }
 
-    LaunchedEffect(state.loadingState, userScripts.value) {
+    LaunchedEffect(state.loadingState, userScripts.value, isHDMode.value) {
         if (state.loadingState is LoadingState.Finished && userScripts.value.isNotEmpty()){
-            navigator.evaluateJavaScript(userScripts.value) {
+            val hdModeScript = if (isHDMode.value) {
+                """
+                (function() {
+                  const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                      mutation.addedNodes.forEach(node => {
+                        if (node.tagName === 'IMG' || node.tagName === 'VIDEO') {
+                          // Check for common attributes indicating lower quality and replace with higher quality ones
+                          // This is a heuristic and might need adjustments based on Facebook's DOM structure
+                          if (node.hasAttribute('data-src') || node.hasAttribute('src')) {
+                             let src = node.getAttribute('data-src') || node.getAttribute('src');
+                             // Simple replacement, might need more sophisticated logic
+                             src = src.replace(/_[sd]+\.jpg/i, '_n.jpg'); // Example for images
+                             src = src.replace(/_[sd]+\.mp4/i, '_n.mp4'); // Example for videos
+                             node.setAttribute('src', src);
+                             node.removeAttribute('data-src');
+                          }
+                        }
+                      });
+                    });
+                  });
+
+                  observer.observe(document.body, { childList: true, subtree: true });
+                })();
+                """
+            } else ""
+
+            navigator.evaluateJavaScript(userScripts.value + hdModeScript) {
                 if (isLoading.value) isLoading.value = false
             }
         }

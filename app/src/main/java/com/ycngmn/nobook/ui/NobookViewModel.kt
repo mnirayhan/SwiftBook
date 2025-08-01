@@ -67,6 +67,9 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
     private val _isRevertDesktop = mutableStateOf(false)
     val isRevertDesktop = _isRevertDesktop
 
+    private val _hdMode = MutableStateFlow(false)
+    val hdMode = _hdMode.asStateFlow()
+
     init {
         runBlocking {
             _removeAds.value = dataStore.removeAds.first()
@@ -84,6 +87,7 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
             _facebookLiteMode.value = dataStore.facebookLiteMode.first()
             _muteKeywords.value = dataStore.muteKeywords.first()
             _isRevertDesktop.value = dataStore.revertDesktop.first()
+            _hdMode.value = dataStore.hdMode.first()
         }
     }
 
@@ -190,5 +194,12 @@ class NobookViewModel(application: Application) : AndroidViewModel(application) 
             dataStore.setRevertDesktop(revertDesktop)
         }
         _isRevertDesktop.value = revertDesktop
+    }
+
+    fun setHdMode(hdMode: Boolean) {
+        viewModelScope.launch {
+            dataStore.setHdMode(hdMode)
+        }
+        _hdMode.value = hdMode
     }
 }
