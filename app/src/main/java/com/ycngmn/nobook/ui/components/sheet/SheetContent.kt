@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +48,7 @@ fun SheetContent(
     val amoledBlack = viewModel.amoledBlack.collectAsState()
     val facebookLiteMode = viewModel.facebookLiteMode.collectAsState()
     val muteKeywords = viewModel.muteKeywords.collectAsState()
+    val hdMode = viewModel.hdMode.collectAsState()
     val hdMode = viewModel.hdMode.collectAsState()
     var keywordInput by remember { mutableStateOf(muteKeywords.value) }
     val isAutoDesktop = isAutoDesktop()
@@ -258,6 +260,18 @@ fun SheetContent(
                 isActive = hdMode.value
             ) {
                 viewModel.setHdMode(!hdMode.value)
+                isActive = viewModel.facebookLiteMode.collectAsState().value
+            ) {
+                val newValue = !viewModel.facebookLiteMode.value
+                viewModel.setFacebookLiteMode(newValue)
+                if (newValue) onOpenFacebookLite()
+            }
+            SheetItem(
+                icon = R.drawable.customize_feed_24px, // Use an appropriate icon, using customize_feed for now
+                title = stringResource(R.string.hd_mode_title),
+                isActive = hdMode.value
+            ) {
+                viewModel.setHdMode(!hdMode.value)
             }
 
             // Check for Updates (icon, not toggle)
@@ -369,6 +383,11 @@ fun SheetContent(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(5.dp)
+                        .clickable { onClose() })
+                }
+            }
+        }
+    }
                         .clickable { onClose() })
                 }
             }
