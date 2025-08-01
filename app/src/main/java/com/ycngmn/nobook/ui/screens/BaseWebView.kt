@@ -81,8 +81,8 @@ fun BaseWebView(
 
     BackHandler {
         if (exit.value) activity?.finish()
-        else navigator.evaluateJavaScript("backHandlerNB();") {
-            val backHandled = it.removeSurrounding(""")
+        else navigator.evaluateJavaScript("backHandlerNB();") { result ->
+            val backHandled = result.removeSurrounding("\"")
             if (backHandled == "false") {
                 if (navigator.canGoBack) navigator.navigateBack()
                 else if (state.lastLoadedUrl?.contains(".facebook.com/messages/") == true)
@@ -127,7 +127,8 @@ fun BaseWebView(
 
     val userScripts = viewModel.scripts
     if (userScripts.value.isEmpty()) {
-        LaunchedEffect(Unit) { onPostLoad() } }
+        LaunchedEffect(Unit) { onPostLoad() }
+    }
 
     LaunchedEffect(state.loadingState, userScripts.value, isHDMode.value) {
         if (state.loadingState is LoadingState.Finished && userScripts.value.isNotEmpty()){
