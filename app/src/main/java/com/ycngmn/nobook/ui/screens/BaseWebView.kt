@@ -172,7 +172,7 @@ fun BaseWebView(
     }
 
     if (settingsToggle.value) NobookSheet(viewModel, settingsToggle, onRestart)
-    // A possible overkill to fix https://github.com/ycngmn/Nobook/issues/5
+
     if (state.lastLoadedUrl?.contains(".com/messages/blocked") == true) onInterceptAction()
 
     if (isLoading.value) SplashLoading(state.loadingState)
