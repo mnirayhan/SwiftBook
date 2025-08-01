@@ -29,7 +29,6 @@ class NobookDataStore(private val context: Context) {
         val MUTE_KEYWORDS = stringPreferencesKey("mute_keywords")
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
         val HD_MODE = booleanPreferencesKey("hd_mode")
-        val HD_MODE = booleanPreferencesKey("hd_mode")
     }
 
     val revertDesktop = context.dataStore.data.map { it[isRevertDesktop] == true }
