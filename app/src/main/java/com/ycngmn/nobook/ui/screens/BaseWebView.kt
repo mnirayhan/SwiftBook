@@ -74,7 +74,7 @@ fun BaseWebView(
     val exit = remember { mutableStateOf(false) }
     LaunchedEffect(exit.value) {
         if (exit.value) {
-            delay(600)
+            delay(800)
             exit.value = false
         }
     }
