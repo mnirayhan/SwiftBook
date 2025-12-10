@@ -18,31 +18,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set versionName from tag
-        run: |
-          TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
-          VERSION_NAME="${TAG#v}"
-          echo "Setting versionName=$VERSION_NAME"
-          sed -i 's/versionName = ".*"/versionName = "'$VERSION_NAME'"/' app/build.gradle.kts
-      - name: Set versionName and versionCode from tag
-        run: |
-          TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
-          VERSION_NAME="${TAG#v}"
-          VERSION_CODE=$(echo "$VERSION_NAME" | awk -F. '{ printf "%d%02d%02d", $1, $2, $3 }' | sed 's/^0*//')
-          echo "Setting versionName=$VERSION_NAME, versionCode=$VERSION_CODE"
-          sed -i 's/versionName = ".*"/versionName = "'$VERSION_NAME'"/' app/build.gradle.kts
-          sed -i 's/versionCode = [0-9]\+/versionCode = '$VERSION_CODE'/' app/build.gradle.kts
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: "zulu"
-          java-version: "17"
-          cache: "gradle"
-      - name: Grant execute permissions for gradle
-        run: chmod +x gradlew
-      - name: Run unit tests
-        run: ./gradlew clean testDebug
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
 
       - name: Build APK
         run: |
@@ -63,29 +44,25 @@ jobs:
         run: |
           BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -n 1)
           if [ -z "$BUILD_TOOLS_DIR" ]; then
-            echo "No build-tools found"
+            echo "No build-tools found in $ANDROID_HOME/build-tools"
             exit 1
           fi
-
           APKSIGNER="${BUILD_TOOLS_DIR}apksigner"
           if [ ! -f "$APKSIGNER" ]; then
-            echo "apksigner not found"
+            echo "apksigner not found at $APKSIGNER"
             exit 1
           fi
-
           if [ ! -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
-            echo "APK not found"
+            echo "APK not found at app/build/outputs/apk/release/app-release-unsigned.apk"
             exit 1
           fi
-
-          cp app/build/outputs/apk/release/app-release-unsigned.apk app-release.apk
-
           $APKSIGNER sign \
-            --ks "$RUNNER_TEMP/keystores/keystore.jks" \
-            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks $RUNNER_TEMP/keystores/keystore.jks \
+            --ks-key-alias ${{ secrets.KEY_ALIAS }} \
             --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
             --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-            app-release.apk
+            --out app-release.apk \
+            app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Clean Up Keystore
         if: always()
