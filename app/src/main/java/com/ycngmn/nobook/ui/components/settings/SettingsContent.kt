@@ -145,15 +145,15 @@ fun SettingsContent(
             TextButton(
                 modifier = Modifier.align(Alignment.Center),
                 onClick = {
-                    val githubRepoUrl = "https://github.com/ycngmn/nobook"
+                    val githubRepoUrl = "https://github.com/mnirayhan/SwiftBook"
                     val intent = Intent(Intent.ACTION_VIEW, githubRepoUrl.toUri())
                     context.startActivity(intent)
                 }
             ) {
-                val packageName = context.packageName
+                val packageName = "rayhan.swiftbook"
                 val versionName = context.packageManager.getPackageInfo(packageName, 0).versionName
                 Text(
-                    "$packageName | v$versionName",
+                    "$packageName 💖 v$versionName",
                     modifier = Modifier.padding(4.dp),
                     maxLines = 1
                 )
