@@ -32,22 +32,3 @@
   });
 })();
 
-// Hide group posts in main feed (desktop)
-(() => {
-  function hideGroupPosts() {
-    // Look for posts/articles in the feed
-    const posts = document.querySelectorAll('div[data-pagelet^="FeedUnit"], div[data-testid="post_container"], div[role="article"]');
-    posts.forEach(post => {
-      // Check for group label or group link
-      // 1. Look for a link to /groups/ in the post
-      const groupLink = post.querySelector('a[href*="facebook.com/groups/"]');
-      // 2. Or look for a label that says "Group" or similar
-      const groupLabel = Array.from(post.querySelectorAll('span, div')).find(el => /group/i.test(el.textContent || ''));
-      if (groupLink || groupLabel) {
-        post.style.display = 'none';
-      }
-    });
-  }
-  hideGroupPosts();
-  new MutationObserver(hideGroupPosts).observe(document.body, { childList: true, subtree: true });
-})();

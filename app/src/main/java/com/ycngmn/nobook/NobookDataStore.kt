@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.map
 
@@ -20,15 +19,13 @@ class NobookDataStore(private val context: Context) {
         val STICKY_NAVBAR = booleanPreferencesKey("sticky_navbar")
         val PINCH_TO_ZOOM = booleanPreferencesKey("pinch_to_zoom")
         val AMOLED_BLACK = booleanPreferencesKey("amoled_black")
-        val HIDE_SUGGESTED = booleanPreferencesKey("hide_suggested")
+        val HIDE_SUGGESTED = booleanPreferencesKey("hide_suggestion")
         val HIDE_REELS = booleanPreferencesKey("hide_reels")
         val HIDE_STORIES = booleanPreferencesKey("hide_stories")
         val HIDE_PEOPLE_YOU_MAY_KNOW = booleanPreferencesKey("hide_people_you_may_know")
         val HIDE_GROUPS = booleanPreferencesKey("hide_groups")
-        val FACEBOOK_LITE_MODE = booleanPreferencesKey("facebook_lite_mode")
-        val MUTE_KEYWORDS = stringPreferencesKey("mute_keywords")
+
         val isRevertDesktop = booleanPreferencesKey("is_revert_desktop")
-        val HD_MODE = booleanPreferencesKey("hd_mode")
     }
 
     val revertDesktop = context.dataStore.data.map { it[isRevertDesktop] == true }
@@ -94,20 +91,5 @@ class NobookDataStore(private val context: Context) {
     val hideGroups = context.dataStore.data.map { it[HIDE_GROUPS] == true }
     suspend fun setHideGroups(hideGroups: Boolean) {
         context.dataStore.edit { it[HIDE_GROUPS] = hideGroups }
-    }
-
-    val facebookLiteMode = context.dataStore.data.map { it[FACEBOOK_LITE_MODE] == true }
-    suspend fun setFacebookLiteMode(facebookLiteMode: Boolean) {
-        context.dataStore.edit { it[FACEBOOK_LITE_MODE] = facebookLiteMode }
-    }
-
-    val muteKeywords = context.dataStore.data.map { it[MUTE_KEYWORDS] ?: "" }
-    suspend fun setMuteKeywords(muteKeywords: String) {
-        context.dataStore.edit { it[MUTE_KEYWORDS] = muteKeywords }
-    }
-
-    val hdMode = context.dataStore.data.map { it[HD_MODE] == true }
-    suspend fun setHdMode(hdMode: Boolean) {
-        context.dataStore.edit { it[HD_MODE] = hdMode }
     }
 }

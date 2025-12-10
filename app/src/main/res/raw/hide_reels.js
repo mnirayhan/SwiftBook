@@ -1,28 +1,46 @@
 (() => {
-  // Try to hide Reels on both desktop and mobile
-  function hideReels() {
-    // Desktop: Look for sections with aria-label="Reels" or similar
-    const desktopReels = Array.from(document.querySelectorAll('[aria-label]'))
-      .filter(el => /reels/i.test(el.getAttribute('aria-label')));
-    desktopReels.forEach(el => {
-      el.style.display = 'none';
-      console.log('Hid desktop reels:', el);
-    });
+  const isDesktop = window.isDesktopMode && window.isDesktopMode();
 
-    // Mobile: Try to find by text content
-    const mobileReels = Array.from(document.querySelectorAll('span, div'))
-      .filter(el => el.textContent && /reels/i.test(el.textContent));
-    mobileReels.forEach(el => {
-      let parent = el.closest('[role="region"], [data-pagelet], [data-visualcompletion]');
-      if (parent) {
-        parent.style.display = 'none';
-        console.log('Hid mobile reels:', parent);
-      }
-    });
+  if (isDesktop) {
+    const CONTAINER = 'div.x1yztbdb.x1n2onr6.xh8yej3.x1ja2u2z';
+    const CHILD = 'div.x6s0dn4.x78zum5.xnpuxes';
+
+    const handle = node => {
+      if (!(node instanceof HTMLElement)) return;
+      const targets = node.matches(CONTAINER) ? [node] : node.querySelectorAll(CONTAINER);
+      targets.forEach(container => {
+        if (container.querySelector(CHILD)) container.style.display = 'none';
+      });
+    };
+
+    document.querySelectorAll(CONTAINER).forEach(handle);
+
+    new MutationObserver(muts => {
+      muts.forEach(m => m.addedNodes.forEach(handle));
+    }).observe(document.body, { childList: true, subtree: true });
+
+  } else {
+    const ICON = '󰣝';
+    const FLAG = 'data-reel-hidden';
+
+    const handle = node => {
+      if (!(node instanceof HTMLElement)) return;
+      const items = node.matches('.fl.ac .native-text') ? [node] : node.querySelectorAll('.fl.ac .native-text');
+      items.forEach(el => {
+        if (el.textContent.trim() === ICON) {
+          const box = el.closest('[data-tracking-duration-id]');
+          if (box && !box.hasAttribute(FLAG)) {
+            box.setAttribute(FLAG, '1');
+            box.style.display = 'none';
+          }
+        }
+      });
+    };
+
+    document.querySelectorAll('.fl.ac .native-text').forEach(handle);
+
+    new MutationObserver(muts => {
+      muts.forEach(m => m.addedNodes.forEach(handle));
+    }).observe(document.body, { childList: true, subtree: true });
   }
-
-  hideReels();
-
-  new MutationObserver(() => hideReels())
-    .observe(document.body, { childList: true, subtree: true });
 })();
